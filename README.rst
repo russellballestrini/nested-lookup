@@ -1,9 +1,17 @@
 nested_lookup
 #############
 
-A small library for python which enables key lookups on deeply nested documents.
+.. image:: https://img.shields.io/badge/pypi-0.0.1-green.svg
+  :target: https://pypi.python.org/pypi/nested-lookup
+  
+.. image:: https://img.shields.io/badge/coverage-100%-green.svg
+  :target: https://github.com/russellballestrini/nested-lookup/blob/master/test_nested_loopkup.py
+
+A small Python library which enables key lookups on deeply nested documents.
 
 Documents may be built out of dictionaries (dicts) and/or lists.
+
+The `nested-lookup` function makes working with JSON, YAML, and XML fun again!
 
 .. contents::
 
