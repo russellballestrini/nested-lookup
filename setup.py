@@ -4,9 +4,9 @@ from setuptools import setup
 
 setup( 
     name = 'nested-lookup',
-    version = '0.0.1',
+    version = '0.0.2',
     description = 'lookup a key in a deeply nested document of dicts and lists',
-    keywords = 'nested document dictionary dict list lookup schema json xml',
+    keywords = 'nested document dictionary dict list lookup schema json xml yaml',
     long_description = open('README.rst').read(),
 
     author = 'Russell Ballestrini',

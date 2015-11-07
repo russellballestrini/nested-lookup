@@ -1,7 +1,7 @@
 nested_lookup
 #############
 
-.. image:: https://img.shields.io/badge/pypi-0.0.1-green.svg
+.. image:: https://img.shields.io/badge/pypi-0.0.2-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
   
 .. image:: https://img.shields.io/badge/coverage-100%-green.svg
@@ -11,17 +11,13 @@ A small Python library which enables key lookups on deeply nested documents.
 
 Documents may be built out of dictionaries (dicts) and/or lists.
 
-The `nested-lookup` function makes working with JSON, YAML, and XML fun again!
+Make working with JSON, YAML, and XML document responses fun again!
 
 .. contents::
 
 
-
-quick start
-===========
-
 install
--------
+========
 
 install from pypi using pip::
 
@@ -38,17 +34,19 @@ or install from source using::
  pip install .
 
 tutorial
---------
+========
 
 .. code-block:: python
 
  >>> from nested_lookup import nested_lookup
- >>> document = [ { 'nachos' : 15 } , { 'salsa' : [ { 'taco': 42 }, { 'burrito' : { 'taco' : 69 } } ] } ]
+
+ >>> document = [ { 'taco' : 42 } , { 'salsa' : [ { 'burrito' : { 'taco' : 69 } } ] } ]
+
  >>> print(nested_lookup('taco', document))
  [42, 69]
 
 misc
-----
+========
 
 :author: Russell Ballestrini
 
