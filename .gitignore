@@ -1,2 +1,6 @@
 __pycache__*
 *.pyc
+.coverage
+build/*
+dist/*
+nested_lookup.egg-info/*
