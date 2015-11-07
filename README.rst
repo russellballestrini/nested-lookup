@@ -7,11 +7,6 @@ Documents may be built out of dictionaries (dicts) and/or lists.
 
 .. contents::
 
-:author: Russell Ballestrini
-
-:web: http://russell.ballestrini.net
-
-:license: Public Domain
 
 
 quick start
@@ -37,7 +32,18 @@ or install from source using::
 tutorial
 --------
 
+.. code-block:: python
 
+ >>> from nested_lookup import nested_lookup
+ >>> document = [ { 'nachos' : 15 } , { 'salsa' : [ { 'taco': 42 }, { 'burrito' : { 'taco' : 69 } } ] } ]
+ >>> print(nested_lookup('taco', document))
+ [42, 69]
 
+misc
+----
 
+:author: Russell Ballestrini
 
+:web: http://russell.ballestrini.net
+
+:license: Public Domain
