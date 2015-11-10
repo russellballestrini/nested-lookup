@@ -48,8 +48,8 @@ tutorial
 misc
 ========
 
-:author: Russell Ballestrini
+:authors: Russell Ballestrini, Douglas Miranda
 
-:web: http://russell.ballestrini.net
+:web: http://russell.ballestrini.net, https://gist.github.com/douglasmiranda/5127251
 
 :license: Public Domain
