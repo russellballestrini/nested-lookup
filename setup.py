@@ -2,9 +2,14 @@
 
 from setuptools import setup
 
+from pip.req import parse_requirements
+
+# get list of requirement strings from requirements.txt
+requires = map(lambda ir : str(ir.req), parse_requirements('requirements.txt'))
+
 setup( 
     name = 'nested-lookup',
-    version = '0.0.2',
+    version = '0.0.3',
     description = 'lookup a key in a deeply nested document of dicts and lists',
     keywords = 'nested document dictionary dict list lookup schema json xml yaml',
     long_description = open('README.rst').read(),
@@ -18,6 +23,7 @@ setup(
 
     py_modules = ['nested_lookup'],
     include_package_data = True,
+    install_requires = requires,
 )
 
 # setup keyword args: http://peak.telecommunity.com/DevCenter/setuptools

@@ -1,3 +1,5 @@
+from six import iteritems
+
 def nested_lookup(key, document):
     """Lookup a key in a nested document, return a list of values"""
     return list(_nested_lookup(key, document))
@@ -10,7 +12,7 @@ def _nested_lookup(key, document):
                 yield result
 
     if isinstance(document, dict):
-        for k, v in document.items():
+        for k, v in iteritems(document):
             if k == key:
                 yield v
             elif isinstance(v, dict):
