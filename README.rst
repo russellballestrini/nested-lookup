@@ -1,7 +1,7 @@
 nested_lookup
 #############
 
-.. image:: https://img.shields.io/badge/pypi-0.1.0-green.svg
+.. image:: https://img.shields.io/badge/pypi-0.1.1-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
   
 .. image:: https://img.shields.io/badge/coverage-100%-green.svg
