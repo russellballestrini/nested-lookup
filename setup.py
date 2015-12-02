@@ -5,7 +5,8 @@ from setuptools import setup
 from pip.req import parse_requirements
 
 # get list of requirement strings from requirements.txt
-requires = map(lambda ir : str(ir.req), parse_requirements('requirements.txt'))
+install_requirements =  parse_requirements('requirements.txt', session='None')
+requires = map(lambda ir : str(ir.req), install_requirements)
 
 setup( 
     name = 'nested-lookup',
