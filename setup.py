@@ -2,15 +2,15 @@
 
 from setuptools import setup
 
-from pip.req import parse_requirements
-
 # get list of requirement strings from requirements.txt
-install_requirements =  parse_requirements('requirements.txt', session='None')
-requires = map(lambda ir : str(ir.req), install_requirements)
+remove_whitespace = lambda x : ''.join(x.split())
+sanitize = lambda x : not x.startswith('#') and x != ''
+with open('requirements.txt', 'r') as f:
+    requires = filter(sanitize, map(remove_whitespace, f.readlines() ))
 
 setup( 
     name = 'nested-lookup',
-    version = '0.0.3',
+    version = '0.1.0',
     description = 'lookup a key in a deeply nested document of dicts and lists',
     keywords = 'nested document dictionary dict list lookup schema json xml yaml',
     long_description = open('README.rst').read(),
@@ -24,10 +24,23 @@ setup(
 
     py_modules = ['nested_lookup'],
     include_package_data = True,
+
     install_requires = requires,
+
+    classifiers = [
+        # Specify the Python versions you support here. In particular, ensure
+        # that you indicate whether you support Python 2, Python 3 or both.
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+    ],
 )
 
 # setup keyword args: http://peak.telecommunity.com/DevCenter/setuptools
 
 # built and uploaded to pypi with this:
-# python setup.py sdist bdist_egg register upload
+# python setup.py sdist bdist_egg bdist_wheel register upload
