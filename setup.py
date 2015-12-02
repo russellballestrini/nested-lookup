@@ -10,7 +10,7 @@ with open('requirements.txt', 'r') as f:
 
 setup( 
     name = 'nested-lookup',
-    version = '0.1.1',
+    version = '0.1.2',
     description = 'lookup a key in a deeply nested document of dicts and lists',
     keywords = 'nested document dictionary dict list lookup schema json xml yaml',
     long_description = open('README.rst').read(),
@@ -43,4 +43,4 @@ setup(
 # setup keyword args: http://peak.telecommunity.com/DevCenter/setuptools
 
 # built and uploaded to pypi with this:
-# python setup.py sdist bdist_egg bdist_wheel register upload
+# python setup.py sdist bdist_egg register upload
