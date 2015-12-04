@@ -1,6 +1,9 @@
 # installation: pip install nested-lookup
 
-from setuptools import setup
+from setuptools import (
+  setup,
+  find_packages,
+)
 
 # get list of requirement strings from requirements.txt
 remove_whitespace = lambda x : ''.join(x.split())
@@ -10,7 +13,7 @@ with open('requirements.txt', 'r') as f:
 
 setup( 
     name = 'nested-lookup',
-    version = '0.1.2',
+    version = '0.1.3',
     description = 'lookup a key in a deeply nested document of dicts and lists',
     keywords = 'nested document dictionary dict list lookup schema json xml yaml',
     long_description = open('README.rst').read(),
@@ -22,7 +25,7 @@ setup(
     platforms = ['All'],
     license = 'Public Domain',
 
-    py_modules = ['nested_lookup'],
+    packages = find_packages(),
     include_package_data = True,
 
     install_requires = requires,
