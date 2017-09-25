@@ -35,4 +35,20 @@ class TestNestedLookup(TestCase):
         self.assertIn(200, results)
         self.assertSetEqual({100,200}, set(results))
 
-
+    def test_wild_nested_lookup(self):
+        results = nested_lookup(
+            key = 'mail', 
+            document = {
+                'name' : 'Russell Ballestrini',
+                'email_address' : 'test1@example.com',
+                'other' : {
+                    'secondary_email' : 'test2@example.com',
+                    'EMAIL_RECOVERY' : 'test3@example.com',
+                },
+            },
+            wild = True,
+        )
+        self.assertEqual(3, len(results))
+        self.assertIn('test1@example.com', results)
+        self.assertIn('test2@example.com', results)
+        self.assertIn('test3@example.com', results)

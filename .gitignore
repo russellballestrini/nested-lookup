@@ -4,3 +4,4 @@ __pycache__*
 build/*
 dist/*
 nested_lookup.egg-info/*
+.cache/
