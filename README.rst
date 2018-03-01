@@ -3,9 +3,6 @@ nested_lookup
 
 .. image:: https://img.shields.io/badge/pypi-0.1.3-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
-  
-.. image:: https://img.shields.io/badge/coverage-100%-green.svg
-  :target: https://github.com/russellballestrini/nested-lookup/blob/master/test_nested_loopkup.py
 
 A small Python library which enables key lookups on deeply nested documents.
 
