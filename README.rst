@@ -53,25 +53,25 @@ For example:
 
 .. code-block:: python
 
-from nested_lookup import nested_lookup
+ from nested_lookup import nested_lookup
 
-my_document = {
+ my_document = {
     'name' : 'Russell Ballestrini',
     'email_address' : 'test1@example.com',
     'other' : {
         'secondary_email' : 'test2@example.com',
         'EMAIL_RECOVERY' : 'test3@example.com',
-    },
-},
+     },
+ },
 
-results = nested_lookup(
-    key = 'mail',
-    document = my_document,
-    wild = True
-)
+ results = nested_lookup(
+     key = 'mail',
+     document = my_document,
+     wild = True
+ )
 
-print(results)
-['test1@example.com', 'test2@example.com', 'test3@example.com']
+ print(results)
+ ['test1@example.com', 'test2@example.com', 'test3@example.com']
 
 
 output
