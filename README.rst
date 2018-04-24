@@ -45,7 +45,7 @@ quick tutorial
 longer tutorial
 ===============
 
-You may control the libraries behavior by passing some optional arguments.
+You may control the function's behavior by passing some optional arguments.
 
 wild (defaults to `False`):
  if `wild` is `True`, treat the given `key` as a case insensitive
