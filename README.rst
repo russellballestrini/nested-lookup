@@ -51,7 +51,7 @@ wild (defaults to `False`):
  if `wild` is `True`, treat the given `key` as a case insensitive
  substring when performing lookups.
 
-return_keys (defaults to `False`):
+with_keys (defaults to `False`):
   if `with_keys` is `True`, return a dictionary of all matched keys
   and a list of values.
 

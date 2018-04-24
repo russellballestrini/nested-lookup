@@ -13,7 +13,7 @@ with open('requirements.txt', 'r') as f:
 
 setup( 
     name = 'nested-lookup',
-    version = '0.1.4',
+    version = '0.1.5',
     description = 'lookup a key in a deeply nested document of dicts and lists',
     keywords = 'nested document dictionary dict list lookup schema json xml yaml',
     long_description = open('README.rst').read(),
@@ -40,6 +40,9 @@ setup(
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
 )
 
