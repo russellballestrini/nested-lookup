@@ -78,10 +78,9 @@ output
 ========
 
 There are two `output` modes:
-  - `list`: the function returns a list of values corresponding to the
-  matched keys.
-  - `dict`: the function returns a `dict` with the matched keys as keys and
-  their corresponding values as values.
+
+* `list`: the function returns a list of values corresponding to the matched keys.
+* `dict`: the function returns a `dict` with the matched keys as keys and their corresponding values as values.
 
 For example:
 
