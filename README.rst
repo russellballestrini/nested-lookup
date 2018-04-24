@@ -56,6 +56,39 @@ For example:
  from nested_lookup import nested_lookup
 
  my_document = {
+    'name' : 'Russell Ballestrini',
+    'email_address' : 'test1@example.com',
+    'other' : {
+        'secondary_email' : 'test2@example.com',
+        'EMAIL_RECOVERY' : 'test3@example.com',
+     },
+ },
+
+ results = nested_lookup(
+     key = 'mail',
+     document = my_document,
+     wild = True
+ )
+
+ print(results)
+ ['test1@example.com', 'test2@example.com', 'test3@example.com']
+
+
+output
+========
+
+There are two `output` modes:
+
+* `list`: the function returns a list of values corresponding to the matched keys.
+* `dict`: the function returns a `dict` with the matched keys as keys and their corresponding values as values.
+
+For example:
+
+.. code-block:: python
+
+ from nested_lookup import nested_lookup
+
+ my_document = {
      'name' : 'Russell Ballestrini',
      'email_address' : 'test1@example.com',
      'other' : {
@@ -66,26 +99,28 @@ For example:
 
  results = nested_lookup(
      key = 'mail',
-     document = my_document
+     document = my_document,
      wild = True,
+     output = 'dict'
  )
 
  print(results)
- ['test1@example.com', 'test2@example.com', 'test3@example.com']
-  
+ {'email_address': 'test1@example.com',
+ 'secondary_email': 'test2@example.com',
+ 'EMAIL_RECOVERY': 'test3@example.com'}
+
 
 misc
 ========
 
-:license: 
+:license:
   * Public Domain
 
-:authors: 
+:authors:
   * Russell Ballestrini
   * Douglas Miranda
 
-:web: 
+:web:
   * http://russell.ballestrini.net
   * http://douglasmiranda.com
   * https://gist.github.com/douglasmiranda/5127251
-

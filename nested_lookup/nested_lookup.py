@@ -1,10 +1,13 @@
 from six import iteritems
 
-def nested_lookup(key, document, wild=False):
+def nested_lookup(key, document, wild=False, output='list'):
     """Lookup a key in a nested document, return a list of values"""
-    return list(_nested_lookup(key, document, wild=wild))
+    if output == 'dict':
+        return dict(_nested_lookup(key, document, wild=wild, output=output))
+    else:
+        return list(_nested_lookup(key, document, wild=wild, output=output))
 
-def _nested_lookup(key, document, wild=False):
+def _nested_lookup(key, document, wild=False, output='list'):
     """Lookup a key in a nested document, yield a value"""
     if isinstance(document, list):
         for d in document:
@@ -14,12 +17,14 @@ def _nested_lookup(key, document, wild=False):
     if isinstance(document, dict):
         for k, v in iteritems(document):
             if key == k or (wild and key.lower() in k.lower()):
-                yield v
+                if output == 'dict':
+                    yield k, v
+                else:
+                    yield v
             elif isinstance(v, dict):
-                for result in _nested_lookup(key, v, wild=wild):
+                for result in _nested_lookup(key, v, wild=wild, output=output):
                     yield result
             elif isinstance(v, list):
                 for d in v:
-                    for result in _nested_lookup(key, d, wild=wild):
+                    for result in _nested_lookup(key, d, wild=wild, output=output):
                         yield result
-
