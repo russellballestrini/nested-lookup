@@ -30,8 +30,8 @@ or install from source using::
  cd nested-lookup
  pip install .
 
-tutorial
-========
+quick tutorial
+==============
 
 .. code-block:: python
 
@@ -42,14 +42,20 @@ tutorial
  >>> print(nested_lookup('taco', document))
  [42, 69]
 
+longer tutorial
+===============
 
-wild
-========
+You may control the libraries behavior by passing some optional arguments.
 
-We also have a `wild` mode that treats the given `key` as a case insensitive
-substring of all the keys in the document and returns any values which match.
+wild (defaults to `False`):
+ if `wild` is `True`, treat the given `key` as a case insensitive
+ substring when performing lookups.
 
-For example:
+return_keys (defaults to `False`):
+  if `with_keys` is `True`, return a dictionary of all matched keys
+  and a list of values.
+
+For example, given the following document:
 
 .. code-block:: python
 
@@ -61,8 +67,13 @@ For example:
     'other' : {
         'secondary_email' : 'test2@example.com',
         'EMAIL_RECOVERY' : 'test3@example.com',
+        'email_address' : 'test4@example.com',
      },
  },
+
+We could act `wild` and find all the email addresses like this:
+
+.. code-block:: python
 
  results = nested_lookup(
      key = 'mail',
@@ -71,43 +82,31 @@ For example:
  )
 
  print(results)
- ['test1@example.com', 'test2@example.com', 'test3@example.com']
-
-
-output
-========
-
-There are two `output` modes:
-
-* `list`: the function returns a list of values corresponding to the matched keys.
-* `dict`: the function returns a `dict` with the matched keys as keys and their corresponding values as values.
-
-For example:
 
 .. code-block:: python
 
- from nested_lookup import nested_lookup
+ ['test1@example.com', 'test4@example.com', 'test2@example.com', 'test3@example.com']
 
- my_document = {
-     'name' : 'Russell Ballestrini',
-     'email_address' : 'test1@example.com',
-     'other' : {
-         'secondary_email' : 'test2@example.com',
-         'EMAIL_RECOVERY' : 'test3@example.com',
-     },
- },
+Additionally, if you also needed the matched key names, you could do this:
+
+.. code-block:: python
 
  results = nested_lookup(
      key = 'mail',
      document = my_document,
      wild = True,
-     output = 'dict'
+     with_keys = True,
  )
 
  print(results)
- {'email_address': 'test1@example.com',
- 'secondary_email': 'test2@example.com',
- 'EMAIL_RECOVERY': 'test3@example.com'}
+
+.. code-block:: python
+
+  {
+   'email_address': ['test1@example.com', 'test4@example.com'],
+   'secondary_email': ['test2@example.com'],
+   'EMAIL_RECOVERY': ['test3@example.com']
+  }
 
 
 misc
