@@ -43,72 +43,72 @@ tutorial
  [42, 69]
 
 
- wild
- ========
+wild
+========
 
- We also have a `wild` mode that treats the given `key` as a case insensitive
- substring of all the keys in the document and returns any values which match.
+We also have a `wild` mode that treats the given `key` as a case insensitive
+substring of all the keys in the document and returns any values which match.
 
- For example:
+For example:
 
- .. code-block:: python
+.. code-block:: python
 
-  from nested_lookup import nested_lookup
+from nested_lookup import nested_lookup
 
-  my_document = {
-      'name' : 'Russell Ballestrini',
-      'email_address' : 'test1@example.com',
-      'other' : {
-          'secondary_email' : 'test2@example.com',
-          'EMAIL_RECOVERY' : 'test3@example.com',
-      },
-  },
+my_document = {
+    'name' : 'Russell Ballestrini',
+    'email_address' : 'test1@example.com',
+    'other' : {
+        'secondary_email' : 'test2@example.com',
+        'EMAIL_RECOVERY' : 'test3@example.com',
+    },
+},
 
-  results = nested_lookup(
-      key = 'mail',
-      document = my_document,
-      wild = True
-  )
+results = nested_lookup(
+    key = 'mail',
+    document = my_document,
+    wild = True
+)
 
-  print(results)
-  ['test1@example.com', 'test2@example.com', 'test3@example.com']
+print(results)
+['test1@example.com', 'test2@example.com', 'test3@example.com']
 
 
-  output
-  ========
+output
+========
 
-  There are two `output` modes:
-    - `list`: the function returns a list of values corresponding to the
-    matched keys.
-    - `dict`: the function returns a `dict` with the matched keys as keys and
-    their corresponding values as values.
+There are two `output` modes:
+  - `list`: the function returns a list of values corresponding to the
+  matched keys.
+  - `dict`: the function returns a `dict` with the matched keys as keys and
+  their corresponding values as values.
 
-  For example:
+For example:
 
-  .. code-block:: python
+.. code-block:: python
 
-   from nested_lookup import nested_lookup
+ from nested_lookup import nested_lookup
 
-   my_document = {
-       'name' : 'Russell Ballestrini',
-       'email_address' : 'test1@example.com',
-       'other' : {
-           'secondary_email' : 'test2@example.com',
-           'EMAIL_RECOVERY' : 'test3@example.com',
-       },
-   },
+ my_document = {
+     'name' : 'Russell Ballestrini',
+     'email_address' : 'test1@example.com',
+     'other' : {
+         'secondary_email' : 'test2@example.com',
+         'EMAIL_RECOVERY' : 'test3@example.com',
+     },
+ },
 
-   results = nested_lookup(
-       key = 'mail',
-       document = my_document,
-       wild = True,
-       output = 'dict'
-   )
+ results = nested_lookup(
+     key = 'mail',
+     document = my_document,
+     wild = True,
+     output = 'dict'
+ )
 
-   print(results)
-   {'email_address': 'test1@example.com',
-   'secondary_email': 'test2@example.com',
-   'EMAIL_RECOVERY': 'test3@example.com'}
+ print(results)
+ {'email_address': 'test1@example.com',
+ 'secondary_email': 'test2@example.com',
+ 'EMAIL_RECOVERY': 'test3@example.com'}
 
 
 misc
