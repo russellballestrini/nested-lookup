@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from nested_lookup import nested_lookup
+from nested_lookup import nested_lookup, get_all_keys
+
 
 class TestNestedLookup(TestCase):
 
@@ -75,3 +76,94 @@ class TestNestedLookup(TestCase):
         self.assertEqual(2, len(matches['d']))
         self.assertSetEqual({100,200}, set(matches['d']))
 
+
+class TestGetAllKeys(TestCase):
+
+    def setUp(self):
+        self.sample1 = {
+            "hardware_details": {
+                "model_name": "MacBook Pro",
+                "processor_details": {
+                    "processor_name": "Intel Core i7",
+                    "processor_speed": "2.7 GHz",
+                    "core_details": {
+                        "total_numberof_cores": "4",
+                        "l2_cache(per_core)": "256 KB"
+                    }
+                },
+                "total_number_of_cores": "4",
+                "memory": "16 GB",
+            },
+            "os_details": {
+                "product_version": "10.13.6",
+                "build_version": "17G65"
+            },
+            "name": "Test",
+            "date": "YYYY-MM-DD HH:MM:SS"
+        }
+        self.sample2 = {
+            "hardware_details": {
+                "model_name": "MacBook Pro",
+                "processor_details": [{
+                    "processor_name": "Intel Core i7",
+                    "processor_speed": "2.7 GHz",
+                    "core_details": {
+                        "total_numberof_cores": "4",
+                        "l2_cache(per_core)": "256 KB"
+                    }
+                }],
+                "total_number_of_cores": "4",
+                "memory": "16 GB",
+            }
+        }
+        self.sample3 = {
+            "hardware_details": {
+                "model_name": "MacBook Pro",
+                "processor_details": [
+                    {
+                        "processor_name": "Intel Core i7",
+                        "processor_speed": "2.7 GHz",
+                    },
+                    {
+                        "total_numberof_cores": "4",
+                        "l2_cache(per_core)": "256 KB"
+                    }
+                ],
+                "total_number_of_cores": "4",
+                "memory": "16 GB",
+            }
+        }
+
+    def test_sample_data1(self):
+        result = get_all_keys(self.sample1)
+        self.assertEqual(15, len(result))
+        keys_to_verify = [
+            'model_name', 'core_details', 'l2_cache(per_core)',
+            'build_version', 'date'
+        ]
+        for key in keys_to_verify:
+            self.assertIn(key, result)
+
+    def test_sample_data2(self):
+        result = get_all_keys(self.sample2)
+        self.assertEqual(10, len(result))
+        keys_to_verify = [
+            'hardware_details', 'processor_speed',
+            'total_numberof_cores', 'memory'
+        ]
+        for key in keys_to_verify:
+            self.assertIn(key, result)
+
+    def test_sample_data3(self):
+        result = get_all_keys(self.sample3)
+        self.assertEqual(9, len(result))
+        keys_to_verify = [
+            'processor_details', 'processor_name',
+            'l2_cache(per_core)', 'total_number_of_cores'
+        ]
+        for key in keys_to_verify:
+            self.assertIn(key, result)
+
+
+if __name__ == '__main__':
+    pass

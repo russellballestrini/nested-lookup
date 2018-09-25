@@ -32,3 +32,29 @@ def _nested_lookup(key, document, wild=False, with_keys=False):
                 for d in v:
                     for result in _nested_lookup(key, d, wild=wild, with_keys=with_keys):
                         yield result
+
+
+def get_all_keys(dictionary):
+    """
+        Method to get all keys from a nested dictionary as a List
+        Args:
+            dictionary: Nested dictionary
+        Returns:
+            List of keys in the dictionary
+    """
+    result_list = []
+
+    def recrusion(dictionary):
+        for key, value in iteritems(dictionary):
+            if isinstance(value, dict):
+                result_list.append(key)
+                recrusion(dictionary=value)
+            elif isinstance(value, list):
+                result_list.append(key)
+                for list_items in value:
+                    recrusion(dictionary=list_items)
+            else:
+                result_list.append(key)
+
+    recrusion(dictionary=dictionary)
+    return result_list
