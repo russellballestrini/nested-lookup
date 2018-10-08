@@ -62,3 +62,58 @@ def get_all_keys(dictionary):
 
     recrusion(dictionary=dictionary)
     return result_list
+
+
+def get_occurance_of_key(dictionary, key):
+    """
+    Method to get occurance of a key in a nested dictionary
+
+    Args:
+        dictionary: Nested dictionary
+        key: Key to search for the occurances
+    Return:
+        Number of occurance (Integer)
+    """
+    return _get_occurrence(dictionary=dictionary, item='key', keyword=key)
+
+
+def get_occurance_of_value(dictionary, value):
+    """
+    Method to get occurance of a value in a nested dictionary
+
+    Args:
+        dictionary: Nested dictionary
+        value: Value to search for the occurances
+    Return:
+        Number of occurance (Integer)
+    """
+    return _get_occurrence(dictionary=dictionary, item='value', keyword=value)
+
+
+def _get_occurrence(dictionary, item, keyword):
+    """
+    Method to get occurance of a key or value in a nested dictionary
+
+    Args:
+        dictionary: Nested dictionary
+        item: Mostly (key or value)
+        keyword: key word to find occurance
+    Return:
+        Number of occurance of the given keyword in the dict
+    """
+    occurance = [0]
+
+    def recrusion(dictionary):
+        if item == 'key':
+            occurance[0] += 1 if dictionary.get(keyword) else 0
+        elif keyword in dictionary.values():
+            occurance[0] += dictionary.values().count(keyword)
+        for key, value in iteritems(dictionary):
+            if isinstance(value, dict):
+                recrusion(dictionary=value)
+            elif isinstance(value, list):
+                for list_items in value:
+                    recrusion(dictionary=list_items)
+
+    recrusion(dictionary=dictionary)
+    return occurance[0]

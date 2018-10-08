@@ -8,6 +8,7 @@ A small Python library which enables:
 
 #. key lookups on deeply nested documents.
 #. fetching all keys from a nested dictionary.
+#. get the number of occurances of a key/value from a nested dictionary
 
 Documents may be built out of dictionaries (dicts) and/or lists.
 
@@ -49,6 +50,14 @@ quick tutorial
 
  >>> get_all_keys(document)
  ['taco', 'salsa', 'burrito', 'taco']
+
+ >>> from nested_lookup import get_occurance_of_key, get_occurance_of_value
+
+ >>> get_occurance_of_key(document, key='taco')
+ 2
+
+ >>> get_occurance_of_value(document, value='42')
+ 1
 
 longer tutorial
 ===============
@@ -92,6 +101,20 @@ To get a list of every nested key in a document, run this:
 .. code-block:: python
   
   ['name', 'email_address', 'other', 'secondary_email', 'EMAIL_RECOVERY', 'email_address']
+
+To get the number of occurance of the given key/value
+
+.. code-block:: python
+
+  from nested_lookup import get_occurance_of_key, get_occurance_of_value
+
+  no_of_key_occurance = get_occurance_of_key(my_document, key='email_address')
+
+  print(no_of_key_occurance)  # result => 2
+
+  no_of_value_occurance = get_occurance_of_value(my_document, value='test2@example.com')
+
+  print(no_of_value_occurance)  # result => 1
 
 Next, we could act `wild` and find all the email addresses like this:
 

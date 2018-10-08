@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from nested_lookup import nested_lookup, get_all_keys
+from nested_lookup import nested_lookup, get_all_keys, get_occurance_of_key,\
+    get_occurance_of_value
 
 
 class TestNestedLookup(TestCase):
@@ -158,6 +159,81 @@ class TestGetAllKeys(TestCase):
         ]
         for key in keys_to_verify:
             self.assertIn(key, result)
+
+
+class TestGetOccurance(TestCase):
+    def setUp(self):
+        self.sample1 = {
+            "build_version": {
+                "model_name": "MacBook Pro",
+                "build_version": {
+                    "processor_name": "Intel Core i7",
+                    "processor_speed": "2.7 GHz",
+                    "core_details": {
+                        "build_version": "4",
+                        "l2_cache(per_core)": "256 KB"
+                    }
+                },
+                "number_of_cores": "4",
+                "memory": "256 KB",
+            },
+            "os_details": {
+                "product_version": "10.13.6",
+                "build_version": "17G65"
+            },
+            "name": "Test",
+            "date": "YYYY-MM-DD HH:MM:SS"
+        }
+        self.sample2 = {
+            "hardware_details": {
+                "model_name": "MacBook Pro",
+                "processor_details": [{
+                    "processor_name": "4",
+                    "processor_speed": "2.7 GHz",
+                    "core_details": {
+                        "total_numberof_cores": "4",
+                        "l2_cache(per_core)": "256 KB"
+                    }
+                }],
+                "total_number_of_cores": "4",
+                "memory": "16 GB",
+            }
+        }
+        self.sample3 = {
+            "hardware_details": {
+                "model_name": "MacBook Pro",
+                "processor_details": [
+                    {
+                        "total_number_of_cores": "4",
+                        "processor_speed": "2.7 GHz",
+                    },
+                    {
+                        "total_number_of_cores": "4",
+                        "l2_cache(per_core)": "256 KB"
+                    }
+                ],
+                "total_number_of_cores": "4",
+                "memory": "16 GB",
+            }
+        }
+
+    def test_sample_data1(self):
+        result = get_occurance_of_key(self.sample1, 'build_version')
+        self.assertEqual(4, result)
+        result = get_occurance_of_value(self.sample1, '256 KB')
+        self.assertEqual(2, result)
+
+    def test_sample_data2(self):
+        result = get_occurance_of_key(self.sample2, 'core_details')
+        self.assertEqual(1, result)
+        result = get_occurance_of_value(self.sample2, '4')
+        self.assertEqual(3, result)
+
+    def test_sample_data3(self):
+        result = get_occurance_of_key(self.sample3, 'total_number_of_cores')
+        self.assertEqual(3, result)
+        result = get_occurance_of_value(self.sample3, '4')
+        self.assertEqual(3, result)
 
 
 if __name__ == "__main__":
