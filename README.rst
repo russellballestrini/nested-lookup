@@ -5,8 +5,9 @@ nested_lookup
   :target: https://pypi.python.org/pypi/nested-lookup
 
 A small Python library which enables:
-1. key lookups on deeply nested documents.
-2. fetching all keys from a nested dictionary.
+
+#. key lookups on deeply nested documents.
+#. fetching all keys from a nested dictionary.
 
 Documents may be built out of dictionaries (dicts) and/or lists.
 
@@ -78,7 +79,21 @@ For example, given the following document:
      },
  },
 
-We could act `wild` and find all the email addresses like this:
+To get a list of every nested key in a document, run this:
+
+.. code-block:: python
+
+  from nested_lookup import get_all_keys
+
+  keys = get_all_keys(my_document)
+
+  print(keys)
+
+.. code-block:: python
+  
+  ['name', 'email_address', 'other', 'secondary_email', 'EMAIL_RECOVERY', 'email_address']
+
+Next, we could act `wild` and find all the email addresses like this:
 
 .. code-block:: python
 
@@ -116,36 +131,6 @@ Additionally, if you also needed the matched key names, you could do this:
   }
 
 
-Tutorial to get all keys from a nested dictionary
-
-.. code-block:: python
-
-  sample_data = {
-    "hardware_details": {
-        "model_name": "MacBook Pro",
-        "processor_details": {
-            "processor_name": "Intel Core i7",
-            "processor_speed": "2.7 GHz",
-            "core_details": {
-                "total_numberof_cores": "4",
-                "l2_cache(per_core)": "256 KB"
-            }
-        },
-        "total_number_of_cores": "4",
-        "memory": "16 GB",
-    },
-    "os_details": {
-        "product_version": "10.13.6",
-        "build_version": "17G65"
-    },
-    "name": "Test",
-    "date": "YYYY-MM-DD HH:MM:SS"
-  }
-
-  result = get_all_keys(sample_data)
-
-  print(result)
-
 misc
 ========
 
@@ -155,6 +140,7 @@ misc
 :authors:
   * Russell Ballestrini
   * Douglas Miranda
+  * Ramesh RV
 
 :web:
   * http://russell.ballestrini.net

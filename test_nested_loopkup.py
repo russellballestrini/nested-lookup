@@ -6,75 +6,70 @@ from nested_lookup import nested_lookup, get_all_keys
 class TestNestedLookup(TestCase):
 
     def setUp(self):
-        self.subject_dict = {'a':1,'b':{'d':100},'c':{'d':200}}
+        self.subject_dict = {"a": 1, "b": {"d": 100}, "c": {"d": 200}}
         self.subject_dict2 = {
-            'name' : 'Russell Ballestrini',
-            'email_address' : 'test1@example.com',
-            'other' : {
-                'secondary_email' : 'test2@example.com',
-                'EMAIL_RECOVERY' : 'test3@example.com',
-                'email_address' : 'test4@example.com',
+            "name": "Russell Ballestrini",
+            "email_address": "test1@example.com",
+            "other": {
+                "secondary_email": "test2@example.com",
+                "EMAIL_RECOVERY": "test3@example.com",
+                "email_address": "test4@example.com",
             },
         }
 
     def test_nested_lookup(self):
-        results = nested_lookup('d', self.subject_dict)
+        results = nested_lookup("d", self.subject_dict)
         self.assertEqual(2, len(results))
         self.assertIn(100, results)
         self.assertIn(200, results)
-        self.assertSetEqual({100,200}, set(results))
+        self.assertSetEqual({100, 200}, set(results))
 
     def test_nested_lookup_wrapped_in_list(self):
-        results = nested_lookup('d', [{}, self.subject_dict, {}])
+        results = nested_lookup("d", [{}, self.subject_dict, {}])
         self.assertEqual(2, len(results))
         self.assertIn(100, results)
         self.assertIn(200, results)
-        self.assertSetEqual({100,200}, set(results))
+        self.assertSetEqual({100, 200}, set(results))
 
     def test_nested_lookup_wrapped_in_list_in_dict_in_list(self):
-        results = nested_lookup('d', [{}, {'H' : [self.subject_dict]} ])
+        results = nested_lookup("d", [{}, {"H": [self.subject_dict]}])
         self.assertEqual(2, len(results))
         self.assertIn(100, results)
         self.assertIn(200, results)
-        self.assertSetEqual({100,200}, set(results))
+        self.assertSetEqual({100, 200}, set(results))
 
     def test_nested_lookup_wrapped_in_list_in_list(self):
-        results = nested_lookup('d', [ {}, [self.subject_dict, {}] ])
+        results = nested_lookup("d", [{}, [self.subject_dict, {}]])
         self.assertEqual(2, len(results))
         self.assertIn(100, results)
         self.assertIn(200, results)
-        self.assertSetEqual({100,200}, set(results))
+        self.assertSetEqual({100, 200}, set(results))
 
     def test_wild_nested_lookup(self):
-        results = nested_lookup(
-            key = 'mail',
-            document = self.subject_dict2
-            wild = True,
-        )
+        results = nested_lookup(key="mail", document=self.subject_dict2, wild=True)
         self.assertEqual(4, len(results))
-        self.assertIn('test1@example.com', results)
-        self.assertIn('test2@example.com', results)
-        self.assertIn('test3@example.com', results)
+        self.assertIn("test1@example.com", results)
+        self.assertIn("test2@example.com", results)
+        self.assertIn("test3@example.com", results)
 
     def test_wild_with_keys_nested_lookup(self):
         matches = nested_lookup(
-            key = 'mail',
-            document = self.subject_dict2,
-            wild = True,
-            with_keys = True,
+            key="mail", document=self.subject_dict2, wild=True, with_keys=True
         )
         self.assertEqual(3, len(matches))
-        self.assertIn('email_address', matches)
-        self.assertIn('secondary_email', matches)
-        self.assertIn('EMAIL_RECOVERY', matches)
-        self.assertSetEqual({'test1@example.com','test4@example.com'}, set(matches['email_address']))
-        self.assertIn('test2@example.com', matches['secondary_email'])
+        self.assertIn("email_address", matches)
+        self.assertIn("secondary_email", matches)
+        self.assertIn("EMAIL_RECOVERY", matches)
+        self.assertSetEqual(
+            {"test1@example.com", "test4@example.com"}, set(matches["email_address"])
+        )
+        self.assertIn("test2@example.com", matches["secondary_email"])
 
     def test_nested_lookup_with_keys(self):
-        matches = nested_lookup('d', self.subject_dict, with_keys=True)
-        self.assertIn('d', matches)
-        self.assertEqual(2, len(matches['d']))
-        self.assertSetEqual({100,200}, set(matches['d']))
+        matches = nested_lookup("d", self.subject_dict, with_keys=True)
+        self.assertIn("d", matches)
+        self.assertEqual(2, len(matches["d"]))
+        self.assertSetEqual({100, 200}, set(matches["d"]))
 
 
 class TestGetAllKeys(TestCase):
@@ -88,30 +83,29 @@ class TestGetAllKeys(TestCase):
                     "processor_speed": "2.7 GHz",
                     "core_details": {
                         "total_numberof_cores": "4",
-                        "l2_cache(per_core)": "256 KB"
-                    }
+                        "l2_cache(per_core)": "256 KB",
+                    },
                 },
                 "total_number_of_cores": "4",
                 "memory": "16 GB",
             },
-            "os_details": {
-                "product_version": "10.13.6",
-                "build_version": "17G65"
-            },
+            "os_details": {"product_version": "10.13.6", "build_version": "17G65"},
             "name": "Test",
-            "date": "YYYY-MM-DD HH:MM:SS"
+            "date": "YYYY-MM-DD HH:MM:SS",
         }
         self.sample2 = {
             "hardware_details": {
                 "model_name": "MacBook Pro",
-                "processor_details": [{
-                    "processor_name": "Intel Core i7",
-                    "processor_speed": "2.7 GHz",
-                    "core_details": {
-                        "total_numberof_cores": "4",
-                        "l2_cache(per_core)": "256 KB"
+                "processor_details": [
+                    {
+                        "processor_name": "Intel Core i7",
+                        "processor_speed": "2.7 GHz",
+                        "core_details": {
+                            "total_numberof_cores": "4",
+                            "l2_cache(per_core)": "256 KB",
+                        },
                     }
-                }],
+                ],
                 "total_number_of_cores": "4",
                 "memory": "16 GB",
             }
@@ -120,14 +114,8 @@ class TestGetAllKeys(TestCase):
             "hardware_details": {
                 "model_name": "MacBook Pro",
                 "processor_details": [
-                    {
-                        "processor_name": "Intel Core i7",
-                        "processor_speed": "2.7 GHz",
-                    },
-                    {
-                        "total_numberof_cores": "4",
-                        "l2_cache(per_core)": "256 KB"
-                    }
+                    {"processor_name": "Intel Core i7", "processor_speed": "2.7 GHz"},
+                    {"total_numberof_cores": "4", "l2_cache(per_core)": "256 KB"},
                 ],
                 "total_number_of_cores": "4",
                 "memory": "16 GB",
@@ -138,8 +126,11 @@ class TestGetAllKeys(TestCase):
         result = get_all_keys(self.sample1)
         self.assertEqual(15, len(result))
         keys_to_verify = [
-            'model_name', 'core_details', 'l2_cache(per_core)',
-            'build_version', 'date'
+            "model_name",
+            "core_details",
+            "l2_cache(per_core)",
+            "build_version",
+            "date",
         ]
         for key in keys_to_verify:
             self.assertIn(key, result)
@@ -148,8 +139,10 @@ class TestGetAllKeys(TestCase):
         result = get_all_keys(self.sample2)
         self.assertEqual(10, len(result))
         keys_to_verify = [
-            'hardware_details', 'processor_speed',
-            'total_numberof_cores', 'memory'
+            "hardware_details",
+            "processor_speed",
+            "total_numberof_cores",
+            "memory",
         ]
         for key in keys_to_verify:
             self.assertIn(key, result)
@@ -158,12 +151,14 @@ class TestGetAllKeys(TestCase):
         result = get_all_keys(self.sample3)
         self.assertEqual(9, len(result))
         keys_to_verify = [
-            'processor_details', 'processor_name',
-            'l2_cache(per_core)', 'total_number_of_cores'
+            "processor_details",
+            "processor_name",
+            "l2_cache(per_core)",
+            "total_number_of_cores",
         ]
         for key in keys_to_verify:
             self.assertIn(key, result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass
