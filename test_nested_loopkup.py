@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from nested_lookup import nested_lookup, get_all_keys, get_occurence_of_key,\
-    get_occurence_of_value
+from nested_lookup import nested_lookup, get_all_keys, get_occurrence_of_key,\
+    get_occurrence_of_value
 
 
 class TestNestedLookup(TestCase):
@@ -161,7 +161,7 @@ class TestGetAllKeys(TestCase):
             self.assertIn(key, result)
 
 
-class TestGetOccurence(TestCase):
+class TestGetOccurrence(TestCase):
     def setUp(self):
         self.sample1 = {
             "build_version": {
@@ -218,21 +218,21 @@ class TestGetOccurence(TestCase):
         }
 
     def test_sample_data1(self):
-        result = get_occurence_of_key(self.sample1, 'build_version')
+        result = get_occurrence_of_key(self.sample1, 'build_version')
         self.assertEqual(4, result)
-        result = get_occurence_of_value(self.sample1, '256 KB')
+        result = get_occurrence_of_value(self.sample1, '256 KB')
         self.assertEqual(2, result)
 
     def test_sample_data2(self):
-        result = get_occurence_of_key(self.sample2, 'core_details')
+        result = get_occurrence_of_key(self.sample2, 'core_details')
         self.assertEqual(1, result)
-        result = get_occurence_of_value(self.sample2, '4')
+        result = get_occurrence_of_value(self.sample2, '4')
         self.assertEqual(3, result)
 
     def test_sample_data3(self):
-        result = get_occurence_of_key(self.sample3, 'total_number_of_cores')
+        result = get_occurrence_of_key(self.sample3, 'total_number_of_cores')
         self.assertEqual(3, result)
-        result = get_occurence_of_value(self.sample3, '4')
+        result = get_occurrence_of_value(self.sample3, '4')
         self.assertEqual(3, result)
 
 

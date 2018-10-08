@@ -64,50 +64,50 @@ def get_all_keys(dictionary):
     return result_list
 
 
-def get_occurence_of_key(dictionary, key):
+def get_occurrence_of_key(dictionary, key):
     """
-    Method to get occurence of a key in a nested dictionary
+    Method to get occurrence of a key in a nested dictionary
 
     Args:
         dictionary: Nested dictionary
-        key: Key to search for the occurences
+        key: Key to search for the occurrences
     Return:
-        Number of occurence (Integer)
+        Number of occurrence (Integer)
     """
     return _get_occurrence(dictionary=dictionary, item='key', keyword=key)
 
 
-def get_occurence_of_value(dictionary, value):
+def get_occurrence_of_value(dictionary, value):
     """
-    Method to get occurence of a value in a nested dictionary
+    Method to get occurrence of a value in a nested dictionary
 
     Args:
         dictionary: Nested dictionary
-        value: Value to search for the occurences
+        value: Value to search for the occurrences
     Return:
-        Number of occurence (Integer)
+        Number of occurrence (Integer)
     """
     return _get_occurrence(dictionary=dictionary, item='value', keyword=value)
 
 
 def _get_occurrence(dictionary, item, keyword):
     """
-    Method to get occurence of a key or value in a nested dictionary
+    Method to get occurrence of a key or value in a nested dictionary
 
     Args:
         dictionary: Nested dictionary
         item: Mostly (key or value)
-        keyword: key word to find occurence
+        keyword: key word to find occurrence
     Return:
-        Number of occurence of the given keyword in the dict
+        Number of occurrence of the given keyword in the dict
     """
-    occurence = [0]
+    occurrence = [0]
 
     def recrusion(dictionary):
         if item == 'key':
-            occurence[0] += 1 if dictionary.get(keyword) else 0
+            occurrence[0] += 1 if dictionary.get(keyword) else 0
         elif keyword in dictionary.values():
-            occurence[0] += dictionary.values().count(keyword)
+            occurrence[0] += dictionary.values().count(keyword)
         for key, value in iteritems(dictionary):
             if isinstance(value, dict):
                 recrusion(dictionary=value)
@@ -116,4 +116,4 @@ def _get_occurrence(dictionary, item, keyword):
                     recrusion(dictionary=list_items)
 
     recrusion(dictionary=dictionary)
-    return occurence[0]
+    return occurrence[0]
