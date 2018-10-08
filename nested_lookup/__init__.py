@@ -1,2 +1,2 @@
-from .nested_lookup import nested_lookup, get_all_keys, get_occurance_of_key,\
-    get_occurance_of_value
+from .nested_lookup import nested_lookup, get_all_keys, get_occurence_of_key,\
+    get_occurence_of_value
