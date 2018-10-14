@@ -27,7 +27,7 @@ def _nested_lookup(key, document, wild=False, with_keys=False):
                     yield k, v
                 else:
                     yield v
-            elif isinstance(v, dict):
+            if isinstance(v, dict):
                 for result in _nested_lookup(key, v, wild=wild, with_keys=with_keys):
                     yield result
             elif isinstance(v, list):
