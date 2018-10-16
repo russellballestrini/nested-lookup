@@ -17,6 +17,27 @@ class TestNestedLookup(TestCase):
                 "email_address": "test4@example.com",
             },
         }
+        self.subject_dict3 = {
+            "build_version": {
+                "model_name": "MacBook Pro",
+                "build_version": {
+                    "processor_name": "Intel Core i7",
+                    "processor_speed": "2.7 GHz",
+                    "core_details": {
+                        "build_version": "4",
+                        "l2_cache(per_core)": "256 KB"
+                    }
+                },
+                "number_of_cores": "4",
+                "memory": "256 KB",
+            },
+            "os_details": {
+                "product_version": "10.13.6",
+                "build_version": "17G65"
+            },
+            "name": "Test",
+            "date": "YYYY-MM-DD HH:MM:SS"
+        }
 
     def test_nested_lookup(self):
         results = nested_lookup("d", self.subject_dict)
@@ -47,7 +68,8 @@ class TestNestedLookup(TestCase):
         self.assertSetEqual({100, 200}, set(results))
 
     def test_wild_nested_lookup(self):
-        results = nested_lookup(key="mail", document=self.subject_dict2, wild=True)
+        results = nested_lookup(
+            key="mail", document=self.subject_dict2, wild=True)
         self.assertEqual(4, len(results))
         self.assertIn("test1@example.com", results)
         self.assertIn("test2@example.com", results)
@@ -61,8 +83,9 @@ class TestNestedLookup(TestCase):
         self.assertIn("email_address", matches)
         self.assertIn("secondary_email", matches)
         self.assertIn("EMAIL_RECOVERY", matches)
-        self.assertSetEqual(
-            {"test1@example.com", "test4@example.com"}, set(matches["email_address"])
+        self.assertSetEqual({
+            "test1@example.com", "test4@example.com"},
+            set(matches["email_address"])
         )
         self.assertIn("test2@example.com", matches["secondary_email"])
 
@@ -71,6 +94,37 @@ class TestNestedLookup(TestCase):
         self.assertIn("d", matches)
         self.assertEqual(2, len(matches["d"]))
         self.assertSetEqual({100, 200}, set(matches["d"]))
+
+    def test_after_key_is_found(self):
+        result = nested_lookup(
+            key='build_version', document=self.subject_dict3
+        )
+        self.assertEqual(4, len(result))
+        self.assertIn('4', result)
+        self.assertIn('17G65', result)
+        match1 = {
+            'processor_name': 'Intel Core i7',
+            'processor_speed': '2.7 GHz',
+            'core_details': {
+                'build_version': '4',
+                'l2_cache(per_core)': '256 KB'
+            }
+        }
+        self.assertIn(match1, result)
+        match2 = {
+            'build_version': {
+                'processor_name': 'Intel Core i7',
+                'processor_speed': '2.7 GHz',
+                'core_details': {
+                    'build_version': '4',
+                    'l2_cache(per_core)': '256 KB'
+                }
+            },
+            'memory': '256 KB',
+            'model_name': 'MacBook Pro',
+            'number_of_cores': '4'
+        }
+        self.assertIn(match2, result)
 
 
 class TestGetAllKeys(TestCase):
@@ -90,7 +144,9 @@ class TestGetAllKeys(TestCase):
                 "total_number_of_cores": "4",
                 "memory": "16 GB",
             },
-            "os_details": {"product_version": "10.13.6", "build_version": "17G65"},
+            "os_details": {
+                "product_version": "10.13.6", "build_version": "17G65"
+            },
             "name": "Test",
             "date": "YYYY-MM-DD HH:MM:SS",
         }
@@ -115,8 +171,14 @@ class TestGetAllKeys(TestCase):
             "hardware_details": {
                 "model_name": "MacBook Pro",
                 "processor_details": [
-                    {"processor_name": "Intel Core i7", "processor_speed": "2.7 GHz"},
-                    {"total_numberof_cores": "4", "l2_cache(per_core)": "256 KB"},
+                    {
+                        "processor_name": "Intel Core i7",
+                        "processor_speed": "2.7 GHz"
+                    },
+                    {
+                        "total_numberof_cores": "4",
+                        "l2_cache(per_core)": "256 KB"
+                    },
                 ],
                 "total_number_of_cores": "4",
                 "memory": "16 GB",
