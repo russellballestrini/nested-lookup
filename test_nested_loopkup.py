@@ -184,6 +184,25 @@ class TestGetAllKeys(TestCase):
                 "memory": "16 GB",
             }
         }
+        self.sample4 = {
+            "values": [
+                {
+                    "checks": [
+                        {
+                            "monitoring_zones": [
+                                "mzdfw",
+                                "mzfra",
+                                "mzhkg",
+                                "mziad",
+                                "mzlon",
+                                "mzord",
+                                "mzsyd"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
 
     def test_sample_data1(self):
         result = get_all_keys(self.sample1)
@@ -221,6 +240,16 @@ class TestGetAllKeys(TestCase):
         ]
         for key in keys_to_verify:
             self.assertIn(key, result)
+
+    def test_sample_data4(self):
+        result = get_all_keys(self.sample4)
+        self.assertEqual(3, len(result))
+        keys_to_verify = [
+            "values",
+            "checks",
+            "monitoring_zones"
+        ]
+        for key in keys_to_verify:
 
 
 class TestGetOccurrence(TestCase):
