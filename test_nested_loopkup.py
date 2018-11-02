@@ -185,23 +185,13 @@ class TestGetAllKeys(TestCase):
             }
         }
         self.sample4 = {
-            "values": [
-                {
-                    "checks": [
-                        {
-                            "monitoring_zones": [
-                                "mzdfw",
-                                "mzfra",
-                                "mzhkg",
-                                "mziad",
-                                "mzlon",
-                                "mzord",
-                                "mzsyd"
-                            ]
-                        }
-                    ]
-                }
-            ]
+            "values": [{
+                "checks": [{
+                    "monitoring_zones":
+                    ["mzdfw", "mzfra", "mzhkg", "mziad",
+                     "mzlon", "mzord", "mzsyd"]
+                }]
+            }]
         }
 
     def test_sample_data1(self):
@@ -250,6 +240,7 @@ class TestGetAllKeys(TestCase):
             "monitoring_zones"
         ]
         for key in keys_to_verify:
+            self.assertIn(key, result)
 
 
 class TestGetOccurrence(TestCase):
@@ -307,6 +298,15 @@ class TestGetOccurrence(TestCase):
                 "memory": "16 GB",
             }
         }
+        self.sample4 = {
+            "values": [{
+                "checks": [{
+                    "monitoring_zones":
+                    ["mzdfw", "mzfra", "mzhkg", "mziad",
+                     "mzlon", "mzord", "mzsyd"]
+                }]
+            }]
+        }
 
     def test_sample_data1(self):
         result = get_occurrence_of_key(self.sample1, 'build_version')
@@ -325,6 +325,16 @@ class TestGetOccurrence(TestCase):
         self.assertEqual(3, result)
         result = get_occurrence_of_value(self.sample3, '4')
         self.assertEqual(3, result)
+
+    def test_sample_data4(self):
+        result = get_occurrence_of_key(self.sample4, 'checks')
+        self.assertEqual(1, result)
+        result = get_occurrence_of_value(self.sample4, 'mziad')
+        self.assertEqual(1, result)
+        # Add one more value in key "monitoring_zones" and verify
+        self.sample4['values'][0]['checks'][0]['monitoring_zones'].append(
+            'mziad')
+        self.assertEqual(2, get_occurrence_of_value(self.sample4, 'mziad'))
 
 
 if __name__ == "__main__":
