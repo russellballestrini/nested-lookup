@@ -1,7 +1,7 @@
 nested_lookup
 #############
 
-.. image:: https://img.shields.io/badge/pypi-0.2.01-green.svg
+.. image:: https://img.shields.io/badge/pypi-0.3.0-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
 
 A small Python library which enables:
