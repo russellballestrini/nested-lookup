@@ -4,11 +4,14 @@ nested_lookup
 .. image:: https://img.shields.io/badge/pypi-0.3.0-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
 
-A small Python library which enables:
+Python library which enables:
 
-#. key lookups on deeply nested documents.
-#. fetching all keys from a nested dictionary.
-#. get the number of occurrences of a key/value from a nested dictionary
+#. (nested_lookup) key lookups on deeply nested documents.
+#. (get_all_keys) fetching all keys from a nested dictionary.
+#. (get_occurrence_of_key/get_occurrence_of_value) get the number of occurrences of a key/value from a nested dictionary
+#. (nested_get) Get a value in a nested document using its key
+#. (nested_update) Update a value in a nested document using its key
+#. (nested_delete) Delete a key->value pair in nested document using its key
 
 Documents may be built out of dictionaries (dicts) and/or lists.
 
@@ -59,6 +62,18 @@ quick tutorial
  >>> get_occurrence_of_value(document, value='42')
  1
 
+ >>> from nested_lookup import nested_get, nested_update, nested_delete
+
+ >>> nested_get(document, 'taco')
+ 42
+
+ >>> nested_update(document, key='burrito', value='Test')
+ [{'taco': 42}, {'salsa': [{'burrito': 'Test'}]}]
+
+ >>> nested_delete(document, 'taco')
+ [{}, {'salsa': [{'burrito': {}}]}]
+
+
 longer tutorial
 ===============
 
@@ -87,34 +102,6 @@ For example, given the following document:
         'email_address' : 'test4@example.com',
      },
  },
-
-To get a list of every nested key in a document, run this:
-
-.. code-block:: python
-
-  from nested_lookup import get_all_keys
-
-  keys = get_all_keys(my_document)
-
-  print(keys)
-
-.. code-block:: python
-  
-  ['name', 'email_address', 'other', 'secondary_email', 'EMAIL_RECOVERY', 'email_address']
-
-To get the number of occurrence of the given key/value
-
-.. code-block:: python
-
-  from nested_lookup import get_occurrence_of_key, get_occurrence_of_value
-
-  no_of_key_occurrence = get_occurrence_of_key(my_document, key='email_address')
-
-  print(no_of_key_occurrence)  # result => 2
-
-  no_of_value_occurrence = get_occurrence_of_value(my_document, value='test2@example.com')
-
-  print(no_of_value_occurrence)  # result => 1
 
 Next, we could act `wild` and find all the email addresses like this:
 
@@ -152,6 +139,54 @@ Additionally, if you also needed the matched key names, you could do this:
    'secondary_email': ['test2@example.com'],
    'EMAIL_RECOVERY': ['test3@example.com']
   }
+
+
+To get a list of every nested key in a document, run this:
+
+.. code-block:: python
+
+  from nested_lookup import get_all_keys
+
+  keys = get_all_keys(my_document)
+
+  print(keys)
+
+.. code-block:: python
+  
+  ['name', 'email_address', 'other', 'secondary_email', 'EMAIL_RECOVERY', 'email_address']
+
+To get the number of occurrence of the given key/value
+
+.. code-block:: python
+
+  from nested_lookup import get_occurrence_of_key, get_occurrence_of_value
+
+  no_of_key_occurrence = get_occurrence_of_key(my_document, key='email_address')
+
+  print(no_of_key_occurrence)  # result => 2
+
+  no_of_value_occurrence = get_occurrence_of_value(my_document, value='test2@example.com')
+
+  print(no_of_value_occurrence)  # result => 1
+
+
+To Get / Delete / Update a key->value pair in nested document
+
+.. code-block:: python
+
+  from nested_lookup import nested_get, nested_update, nested_delete
+
+  sec_email = nested_get(my_document, 'secondary_email')
+
+  print(sec_email)  # result => test2@example.com
+
+  nested_delete(my_document, 'EMAIL_RECOVERY')
+
+  print(my_document)  # result => {'other': {'secondary_email': 'test2@example.com', 'email_address': 'test4@example.com'}, 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
+
+  nested_update(my_document, key='other', value='Test')
+
+  print(my_document)  # result => {'other': 'Test', 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
 
 
 misc
