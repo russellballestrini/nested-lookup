@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from nested_lookup import nested_get, nested_update, nested_delete
+from nested_lookup import nested_update, nested_delete
 
 
 class BaseLookUpApi(TestCase):
@@ -54,49 +54,6 @@ class BaseLookUpApi(TestCase):
                 }]
             }]
         }
-
-
-class TestNestedGet(BaseLookUpApi):
-    def test_sample_data1(self):
-        result1 = {
-            "build_version": '4',
-            "l2_cache(per_core)": '256 KB'
-        }
-        result2 = {
-            "product_version": '10.13.6',
-            "build_version": '17G65'
-        }
-        self.assertEqual(
-            result1, nested_get(self.sample_data1, 'core_details')
-        )
-        self.assertEqual(
-            result2, nested_get(self.sample_data1, 'os_details')
-        )
-
-    def test_sample_data2(self):
-        result1 = [
-            {
-                "processor_name": 'Intel Core i7',
-                "processor_speed": '2.7 GHz'
-            },
-            {
-                "total_number_of_cores": '4',
-                "l2_cache(per_core)": '256 KB'
-            }
-        ]
-        self.assertEqual(
-            result1, nested_get(self.sample_data2, 'processor_details')
-        )
-        self.assertEqual(
-            '4', nested_get(self.sample_data2, 'total_number_of_cores')
-        )
-
-    def test_sample_data3(self):
-        result = ["mzdfw", "mzfra", "mzhkg", "mziad",
-                  "mzlon", "mzord", "mzsyd"]
-        self.assertEqual(
-            result, nested_get(self.sample_data3, 'monitoring_zones')
-        )
 
 
 class TestNestedDelete(BaseLookUpApi):
