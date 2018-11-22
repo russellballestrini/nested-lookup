@@ -64,10 +64,7 @@ quick tutorial
  >>> get_occurrence_of_value(document, value='42')
  1
 
- >>> from nested_lookup import nested_get, nested_update, nested_delete
-
- >>> nested_get(document, 'taco')
- 42
+ >>> from nested_lookup import nested_update, nested_delete
 
  >>> nested_update(document, key='burrito', value='Test')
  [{'taco': 42}, {'salsa': [{'burrito': 'Test'}]}]
@@ -176,19 +173,15 @@ To Get / Delete / Update a key->value pair in nested document
 
 .. code-block:: python
 
-  from nested_lookup import nested_get, nested_update, nested_delete
+  from nested_lookup import nested_update, nested_delete
 
-  sec_email = nested_get(my_document, 'secondary_email')
+  result = nested_delete(my_document, 'EMAIL_RECOVERY')
 
-  print(sec_email)  # result => test2@example.com
+  print(result)  # result => {'other': {'secondary_email': 'test2@example.com', 'email_address': 'test4@example.com'}, 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
 
-  nested_delete(my_document, 'EMAIL_RECOVERY')
+  result = nested_update(my_document, key='other', value='Test')
 
-  print(my_document)  # result => {'other': {'secondary_email': 'test2@example.com', 'email_address': 'test4@example.com'}, 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
-
-  nested_update(my_document, key='other', value='Test')
-
-  print(my_document)  # result => {'other': 'Test', 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
+  print(result)  # result => {'other': 'Test', 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
 
 
 misc
