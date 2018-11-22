@@ -1,19 +1,21 @@
 nested_lookup
 #############
 
-.. image:: https://img.shields.io/badge/pypi-0.3.0-green.svg
+.. image:: https://img.shields.io/badge/pypi-0.2.11-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
 
-Python library which enables:
+The `nested_lookup` package provides many Python functions for working with deeply nested documents. A document in this case is a a mixture of Python dictionary and list objects typically derived from YAML or JSON
 
-#. (nested_lookup) key lookups on deeply nested documents.
-#. (get_all_keys) fetching all keys from a nested dictionary.
-#. (get_occurrence_of_key/get_occurrence_of_value) get the number of occurrences of a key/value from a nested dictionary
-#. (nested_get) Get a value in a nested document using its key
-#. (nested_update) Update a value in a nested document using its key
-#. (nested_delete) Delete a key->value pair in nested document using its key
-
-Documents may be built out of dictionaries (dicts) and/or lists.
+*nested_lookup:*
+  Perform a key lookup on a deeply nested document. Returns all matches in a `list`. (Please see tutorial for more info)
+*get_all_keys:*
+  Fetch all from a nested dictionary. Returns `list` of keys.
+*get_occurrence_of_key/get_occurrence_of_value:*
+  Returns the number of occurrences of a key/value from a nested dictionary.
+*nested_delete:*
+  Returns a document that includes everything but the given key
+*nested_update:*
+  Returns a document that has updated key, value pair
 
 Make working with JSON, YAML, and XML document responses fun again!
 
