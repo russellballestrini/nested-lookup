@@ -8,14 +8,14 @@ The `nested_lookup` package provides many Python functions for working with deep
 
 *nested_lookup:*
   Perform a key lookup on a deeply nested document. Returns all matches in a `list`. (Please see tutorial for more info)
-*get_all_keys:*
-  Fetch all from a nested dictionary. Returns `list` of keys.
-*get_occurrence_of_key/get_occurrence_of_value:*
-  Returns the number of occurrences of a key/value from a nested dictionary.
 *nested_delete:*
   Returns a document that includes everything but the given key
 *nested_update:*
   Returns a document that has updated key, value pair
+*get_all_keys:*
+  Fetch all from a nested dictionary. Returns `list` of keys.
+*get_occurrence_of_key/get_occurrence_of_value:*
+  Returns the number of occurrences of a key/value from a nested dictionary.
 
 Make working with JSON, YAML, and XML document responses fun again!
 
