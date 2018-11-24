@@ -1,16 +1,21 @@
 nested_lookup
 #############
 
-.. image:: https://img.shields.io/badge/pypi-0.2.01-green.svg
+.. image:: https://img.shields.io/badge/pypi-0.2.11-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
 
-A small Python library which enables:
+The `nested_lookup` package provides many Python functions for working with deeply nested documents. A document in this case is a a mixture of Python dictionary and list objects typically derived from YAML or JSON
 
-#. key lookups on deeply nested documents.
-#. fetching all keys from a nested dictionary.
-#. get the number of occurrences of a key/value from a nested dictionary
-
-Documents may be built out of dictionaries (dicts) and/or lists.
+*nested_lookup:*
+  Perform a key lookup on a deeply nested document. Returns all matches in a `list`. (Please see tutorial for more info)
+*nested_delete:*
+  Returns a document that includes everything but the given key
+*nested_update:*
+  Returns a document that has updated key, value pair
+*get_all_keys:*
+  Fetch all from a nested dictionary. Returns `list` of keys.
+*get_occurrence_of_key/get_occurrence_of_value:*
+  Returns the number of occurrences of a key/value from a nested dictionary.
 
 Make working with JSON, YAML, and XML document responses fun again!
 
@@ -59,6 +64,15 @@ quick tutorial
  >>> get_occurrence_of_value(document, value='42')
  1
 
+ >>> from nested_lookup import nested_update, nested_delete
+
+ >>> nested_update(document, key='burrito', value='Test')
+ [{'taco': 42}, {'salsa': [{'burrito': 'Test'}]}]
+
+ >>> nested_delete(document, 'taco')
+ [{}, {'salsa': [{'burrito': {}}]}]
+
+
 longer tutorial
 ===============
 
@@ -87,34 +101,6 @@ For example, given the following document:
         'email_address' : 'test4@example.com',
      },
  },
-
-To get a list of every nested key in a document, run this:
-
-.. code-block:: python
-
-  from nested_lookup import get_all_keys
-
-  keys = get_all_keys(my_document)
-
-  print(keys)
-
-.. code-block:: python
-  
-  ['name', 'email_address', 'other', 'secondary_email', 'EMAIL_RECOVERY', 'email_address']
-
-To get the number of occurrence of the given key/value
-
-.. code-block:: python
-
-  from nested_lookup import get_occurrence_of_key, get_occurrence_of_value
-
-  no_of_key_occurrence = get_occurrence_of_key(my_document, key='email_address')
-
-  print(no_of_key_occurrence)  # result => 2
-
-  no_of_value_occurrence = get_occurrence_of_value(my_document, value='test2@example.com')
-
-  print(no_of_value_occurrence)  # result => 1
 
 Next, we could act `wild` and find all the email addresses like this:
 
@@ -152,6 +138,50 @@ Additionally, if you also needed the matched key names, you could do this:
    'secondary_email': ['test2@example.com'],
    'EMAIL_RECOVERY': ['test3@example.com']
   }
+
+
+To get a list of every nested key in a document, run this:
+
+.. code-block:: python
+
+  from nested_lookup import get_all_keys
+
+  keys = get_all_keys(my_document)
+
+  print(keys)
+
+.. code-block:: python
+  
+  ['name', 'email_address', 'other', 'secondary_email', 'EMAIL_RECOVERY', 'email_address']
+
+To get the number of occurrence of the given key/value
+
+.. code-block:: python
+
+  from nested_lookup import get_occurrence_of_key, get_occurrence_of_value
+
+  no_of_key_occurrence = get_occurrence_of_key(my_document, key='email_address')
+
+  print(no_of_key_occurrence)  # result => 2
+
+  no_of_value_occurrence = get_occurrence_of_value(my_document, value='test2@example.com')
+
+  print(no_of_value_occurrence)  # result => 1
+
+
+To Get / Delete / Update a key->value pair in nested document
+
+.. code-block:: python
+
+  from nested_lookup import nested_update, nested_delete
+
+  result = nested_delete(my_document, 'EMAIL_RECOVERY')
+
+  print(result)  # result => {'other': {'secondary_email': 'test2@example.com', 'email_address': 'test4@example.com'}, 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
+
+  result = nested_update(my_document, key='other', value='Test')
+
+  print(result)  # result => {'other': 'Test', 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
 
 
 misc
