@@ -4,20 +4,31 @@ nested_lookup
 .. image:: https://img.shields.io/badge/pypi-0.2.11-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
 
-The `nested_lookup` package provides many Python functions for working with deeply nested documents. A document in this case is a a mixture of Python dictionary and list objects typically derived from YAML or JSON
+Make working with JSON, YAML, and XML document responses fun again!
+
+The `nested_lookup` package provides many Python functions for working with deeply nested documents.
+A document in this case is a a mixture of Python dictionary and list objects typically derived from YAML or JSON.
 
 *nested_lookup:*
-  Perform a key lookup on a deeply nested document. Returns all matches in a `list`. (Please see tutorial for more info)
-*nested_delete:*
-  Returns a document that includes everything but the given key
+  Perform a key lookup on a deeply nested document.
+  Returns a `list` of matching values.
+
 *nested_update:*
-  Returns a document that has updated key, value pair
+  Given a document, find all occurances of the given key set the given value.
+  Returns a copy of the document.
+
+*nested_delete:*
+  Given a document, find all occurances of the given key and delete it.
+  Returns a copy of the document.
+
 *get_all_keys:*
-  Fetch all from a nested dictionary. Returns `list` of keys.
+  Fetch all keys from a deeply nested dictionary.
+  Returns a `list` of keys.
+
 *get_occurrence_of_key/get_occurrence_of_value:*
   Returns the number of occurrences of a key/value from a nested dictionary.
 
-Make working with JSON, YAML, and XML document responses fun again!
+For example function invocations, plesae see the tutorial.
 
 .. contents::
 
@@ -39,6 +50,7 @@ or install from source using::
  cd nested-lookup
  pip install .
 
+
 quick tutorial
 ==============
 
@@ -50,6 +62,14 @@ quick tutorial
 
  >>> print(nested_lookup('taco', document))
  [42, 69]
+
+ >>> from nested_lookup import nested_update, nested_delete
+
+ >>> nested_update(document, key='burrito', value='Test')
+ [{'taco': 42}, {'salsa': [{'burrito': 'Test'}]}]
+
+ >>> nested_delete(document, 'taco')
+ [{}, {'salsa': [{'burrito': {}}]}]
 
  >>> from nested_lookup import get_all_keys
 
@@ -63,14 +83,6 @@ quick tutorial
 
  >>> get_occurrence_of_value(document, value='42')
  1
-
- >>> from nested_lookup import nested_update, nested_delete
-
- >>> nested_update(document, key='burrito', value='Test')
- [{'taco': 42}, {'salsa': [{'burrito': 'Test'}]}]
-
- >>> nested_delete(document, 'taco')
- [{}, {'salsa': [{'burrito': {}}]}]
 
 
 longer tutorial
@@ -140,6 +152,21 @@ Additionally, if you also needed the matched key names, you could do this:
   }
 
 
+To Get / Delete / Update a key->value pair in nested document
+
+.. code-block:: python
+
+  from nested_lookup import nested_update, nested_delete
+
+  result = nested_delete(my_document, 'EMAIL_RECOVERY')
+
+  print(result)  # result => {'other': {'secondary_email': 'test2@example.com', 'email_address': 'test4@example.com'}, 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
+
+  result = nested_update(my_document, key='other', value='Test')
+
+  print(result)  # result => {'other': 'Test', 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
+
+
 To get a list of every nested key in a document, run this:
 
 .. code-block:: python
@@ -167,21 +194,6 @@ To get the number of occurrence of the given key/value
   no_of_value_occurrence = get_occurrence_of_value(my_document, value='test2@example.com')
 
   print(no_of_value_occurrence)  # result => 1
-
-
-To Get / Delete / Update a key->value pair in nested document
-
-.. code-block:: python
-
-  from nested_lookup import nested_update, nested_delete
-
-  result = nested_delete(my_document, 'EMAIL_RECOVERY')
-
-  print(result)  # result => {'other': {'secondary_email': 'test2@example.com', 'email_address': 'test4@example.com'}, 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
-
-  result = nested_update(my_document, key='other', value='Test')
-
-  print(result)  # result => {'other': 'Test', 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
 
 
 misc
