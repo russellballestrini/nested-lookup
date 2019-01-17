@@ -14,11 +14,11 @@ A document in this case is a a mixture of Python dictionary and list objects typ
   Returns a `list` of matching values.
 
 *nested_update:*
-  Given a document, find all occurances of the given key set the given value.
-  Returns a copy of the document.
+  Given a document, find all occurences of the given key and update the value
+  By default returns a copy of the document, to mutate the original one instead - please specify `in_place=True` argument.
 
 *nested_delete:*
-  Given a document, find all occurances of the given key and delete it.
+  Given a document, find all occurrences of the given key and delete it.
   Returns a copy of the document.
 
 *get_all_keys:*
@@ -178,7 +178,7 @@ To get a list of every nested key in a document, run this:
   print(keys)
 
 .. code-block:: python
-  
+
   ['name', 'email_address', 'other', 'secondary_email', 'EMAIL_RECOVERY', 'email_address']
 
 To get the number of occurrence of the given key/value

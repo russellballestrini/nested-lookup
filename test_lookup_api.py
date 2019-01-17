@@ -103,6 +103,19 @@ class TestNestedUpdate(BaseLookUpApi):
             result, nested_update(self.sample_data1, 'build_version', 'Test1')
         )
 
+    def test_in_place(self):
+        result = {
+            "build_version": "Test1",
+            "os_details": {
+                "product_version": '10.13.6',
+                "build_version": 'Test1'
+            },
+            "name": 'Test',
+            "date": 'YYYY-MM-DD HH:MM:SS'
+        }
+        nested_update(self.sample_data1, 'build_version', 'Test1', in_place=True)
+        self.assertEqual(result, self.sample_data1)
+
     def test_sample_data2(self):
         result = {
             "hardware_details": {
