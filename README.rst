@@ -15,7 +15,7 @@ A document in this case is a a mixture of Python dictionary and list objects typ
 
 *nested_update:*
   Given a document, find all occurences of the given key and update the value
-  By default returns a copy of the document, to mutate the original one instead - please specify `in_place=True` argument.
+  By default, returns a copy of the document. To mutate the original one instead - please specify the `in_place=True` argument.
 
 *nested_delete:*
   Given a document, find all occurrences of the given key and delete it.
