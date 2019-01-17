@@ -28,9 +28,10 @@ def _nested_delete(document, key):
     return document
 
 
-def nested_update(document, key, value):
-    duplicate = copy.deepcopy(document)
-    return _nested_update(document=duplicate, key=key, value=value)
+def nested_update(document, key, value, in_place=False):
+    if not in_place:
+        document = copy.deepcopy(document)
+    return _nested_update(document=document, key=key, value=value)
 
 
 def _nested_update(document, key, value):
