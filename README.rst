@@ -14,7 +14,7 @@ A document in this case is a a mixture of Python dictionary and list objects typ
   Returns a `list` of matching values.
 
 *nested_update:*
-  Given a document, find all occurances of the given key set the given value.
+  Given a document, find all occurances of the given key and update the value.
   Returns a copy of the document.
 
 *nested_delete:*
