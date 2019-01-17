@@ -20,8 +20,8 @@ with open('requirements.txt', 'r') as f:
 
 setup(
     name='nested-lookup',
-    version='0.2.11',
-    description='lookup a key in a deeply nested document of dicts and lists',
+    version='0.2.12',
+    description='Python functions for working with deeply nested documents (lists and dicts) ',
     keywords='nested document dictionary dict list lookup schema json xml yaml',
     long_description=open('README.rst').read(),
 
@@ -40,13 +40,8 @@ setup(
     classifiers=[
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',

@@ -1,7 +1,7 @@
 nested_lookup
 #############
 
-.. image:: https://img.shields.io/badge/pypi-0.2.11-green.svg
+.. image:: https://img.shields.io/badge/pypi-0.2.12-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
 
 Make working with JSON, YAML, and XML document responses fun again!
@@ -14,12 +14,14 @@ A document in this case is a a mixture of Python dictionary and list objects typ
   Returns a `list` of matching values.
 
 *nested_update:*
-  Given a document, find all occurences of the given key and update the value
-  By default, returns a copy of the document. To mutate the original one instead - please specify the `in_place=True` argument.
+  Given a document, find all occurences of the given key and update the value.
+  By default, returns a copy of the document.
+  To mutate the original specify the `in_place=True` argument.
 
 *nested_delete:*
   Given a document, find all occurrences of the given key and delete it.
-  Returns a copy of the document.
+  By default, returns a copy of the document.
+  To mutate the original specify the `in_place=True` argument.
 
 *get_all_keys:*
   Fetch all keys from a deeply nested dictionary.

@@ -2,9 +2,10 @@ import copy
 from six import iteritems
 
 
-def nested_delete(document, key):
-    duplicate = copy.deepcopy(document)
-    return _nested_delete(document=duplicate, key=key)
+def nested_delete(document, key, in_place=False):
+    if not in_place:
+        document = copy.deepcopy(document)
+    return _nested_delete(document=document, key=key)
 
 
 def _nested_delete(document, key):
