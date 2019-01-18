@@ -103,6 +103,38 @@ class TestNestedUpdate(BaseLookUpApi):
             result, nested_update(self.sample_data1, 'build_version', 'Test1')
         )
 
+    def test_nested_update_in_place_false(self):
+        """nested_update should mutate and return a copy of the original document"""
+        before_id = id(self.sample_data1)
+        result = nested_update(self.sample_data1, 'build_version', 'Test2', in_place=False)
+        after_id = id(result)
+        # the object ids should _not_ match.
+        self.assertNotEqual(before_id, after_id)
+
+    def test_nested_update_in_place_true(self):
+        """nested_update should mutate and return the original document"""
+        before_id = id(self.sample_data1)
+        result = nested_update(self.sample_data1, 'build_version', 'Test2', in_place=True)
+        after_id = id(result)
+        # the object ids should match.
+        self.assertEqual(before_id, after_id)
+
+    def test_nested_delete_in_place_false(self):
+        """nested_delete should mutate and return a copy of the original document"""
+        before_id = id(self.sample_data1)
+        result = nested_delete(self.sample_data1, 'build_version', in_place=False)
+        after_id = id(result)
+        # the object ids should _not_ match.
+        self.assertNotEqual(before_id, after_id)
+
+    def test_nested_delete_in_place_true(self):
+        """nested_delete should mutate and return the original document"""
+        before_id = id(self.sample_data1)
+        result = nested_delete(self.sample_data1, 'build_version', in_place=True)
+        after_id = id(result)
+        # the object ids should match.
+        self.assertEqual(before_id, after_id)
+
     def test_sample_data2(self):
         result = {
             "hardware_details": {
