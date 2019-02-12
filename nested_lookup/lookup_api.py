@@ -35,22 +35,32 @@ def nested_update(document, key, value, in_place=False):
     return _nested_update(document=document, key=key, value=value)
 
 
-def _nested_update(document, key, value):
+def _nested_update(document, key, value, run = 0):
     """
     Method to update a key->value pair in a nested document
     Args:
         document: Might be List of Dicts (or) Dict of Lists (or)
-         Dict of List of Dicts etc...
+        Dict of List of Dicts etc...
         key: Key to update the value
     Return:
         Returns a document that has updated key, value pair.
     """
+    # check if a list or scalar value is provided and create a list from the scalar value
+    if type(value) == list:
+        val_len = len(value)
+    else: 
+        value  = [value]
+        val_len = len(value)
+
     if isinstance(document, list):
         for list_items in document:
-            _nested_update(document=list_items, key=key, value=value)
+            _nested_update(document=list_items, key=key, value=value, run = run)
     elif isinstance(document, dict):
         if document.get(key):
-            document[key] = value
+            # check if a value with the coresponding index exists and use it otherwise recycle the intially given value
+            val = value[run] if run < val_len  else value[0]
+            document[key] = val
+            run = run + 1
         for dict_key, dict_value in iteritems(document):
-            _nested_update(document=dict_value, key=key, value=value)
+            _nested_update(document=dict_value, key=key, value=value, run = run)
     return document
