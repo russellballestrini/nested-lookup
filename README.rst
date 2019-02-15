@@ -75,6 +75,24 @@ quick tutorial
  >>> nested_delete(document, 'taco')
  [{}, {'salsa': [{'burrito': {}}]}]
 
+ Nested alter:
+
+# write a callback function which processes a scalar value.
+# Be aware about the possible types which can be passed to the callback functions.
+# In this example we can be sure that only int will be passed, in production you should check the type because it could be anything.
+>>> def callback(data):
+>>>     return data + 10 # add 10 to every taco prize
+
+# The alter-version only works for scalar input (one dict), if you need to adress a list of dicts, you have to 
+# manually iterate over those and pass them to nested_update one by one
+>>> out =[]
+>>> for elem in document:
+>>>     altered_document = nested_alter(elem,"taco", callback)
+>>>    out.append(altered_document)
+
+>>> print(out)
+[ { 'taco' : 52 } , { 'salsa' : [ { 'burrito' : { 'taco' : 79 } } ] } ]
+
  >>> from nested_lookup import get_all_keys
 
  >>> get_all_keys(document)
