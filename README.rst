@@ -77,14 +77,14 @@ quick tutorial
 
  Nested alter:
 
-# write a callback function which processes a scalar value.
-# Be aware about the possible types which can be passed to the callback functions.
-# In this example we can be sure that only int will be passed, in production you should check the type because it could be anything.
+write a callback function which processes a scalar value.
+Be aware about the possible types which can be passed to the callback functions.
+In this example we can be sure that only int will be passed, in production you should check the type because it could be anything.
 >>> def callback(data):
 >>>     return data + 10 # add 10 to every taco prize
 
-# The alter-version only works for scalar input (one dict), if you need to adress a list of dicts, you have to 
-# manually iterate over those and pass them to nested_update one by one
+The alter-version only works for scalar input (one dict), if you need to adress a list of dicts, you have to 
+manually iterate over those and pass them to nested_update one by one
 >>> out =[]
 >>> for elem in document:
 >>>     altered_document = nested_alter(elem,"taco", callback)
