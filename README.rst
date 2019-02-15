@@ -24,6 +24,11 @@ A document in this case is a a mixture of Python dictionary and list objects typ
   Given a document, find all occurrences of the given key and delete it.
   By default, returns a copy of the document.
   To mutate the original specify the `in_place=True` argument.
+  
+*nested_alter:*
+  Given a document, find all occurrences of the given key and alter it with a callback function
+  By default, returns a copy of the document.
+  To mutate the original specify the `in_place=True` argument.
 
 *get_all_keys:*
   Fetch all keys from a deeply nested dictionary.
@@ -75,16 +80,23 @@ quick tutorial
  >>> nested_delete(document, 'taco')
  [{}, {'salsa': [{'burrito': {}}]}]
 
- Nested alter:
 
+
+*Nested Alter*:
 write a callback function which processes a scalar value.
 Be aware about the possible types which can be passed to the callback functions.
 In this example we can be sure that only int will be passed, in production you should check the type because it could be anything.
+
+.. code-block:: python
+
 >>> def callback(data):
 >>>     return data + 10 # add 10 to every taco prize
 
 The alter-version only works for scalar input (one dict), if you need to adress a list of dicts, you have to 
 manually iterate over those and pass them to nested_update one by one
+
+.. code-block:: python
+
 >>> out =[]
 >>> for elem in document:
 >>>     altered_document = nested_alter(elem,"taco", callback)
