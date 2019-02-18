@@ -7,3 +7,4 @@ dist/*
 nested_lookup.egg-info/*
 .cache
 .vscode
+git_commit.sh
