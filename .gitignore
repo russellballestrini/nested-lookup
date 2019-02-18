@@ -6,4 +6,4 @@ build/*
 dist/*
 nested_lookup.egg-info/*
 .cache
-/.vscode
+.vscode
