@@ -113,9 +113,10 @@ def _get_occurrence(dictionary, item, keyword):
 
     def recrusion(dictionary):
         if item == 'key':
-            occurrence[0] += 1 if dictionary.get(keyword) else 0
-        elif keyword in dictionary.values():
-            occurrence[0] += dictionary.values().count(keyword)
+            if dictionary.get(keyword) is not None:
+                occurrence[0] += 1
+        elif keyword in list(dictionary.values()):
+            occurrence[0] += list(dictionary.values()).count(keyword)
         for key, value in iteritems(dictionary):
             if isinstance(value, dict):
                 recrusion(dictionary=value)

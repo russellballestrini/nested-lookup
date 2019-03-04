@@ -22,7 +22,7 @@ def _nested_delete(document, key):
         for list_items in document:
             _nested_delete(document=list_items, key=key)
     elif isinstance(document, dict):
-        if document.get(key):
+        if document.get(key) is not None:
             del document[key]
         for dict_key, dict_value in iteritems(document):
             _nested_delete(document=dict_value, key=key)
@@ -49,7 +49,7 @@ def _nested_update(document, key, value):
         for list_items in document:
             _nested_update(document=list_items, key=key, value=value)
     elif isinstance(document, dict):
-        if document.get(key):
+        if document.get(key) is not None:
             document[key] = value
         for dict_key, dict_value in iteritems(document):
             _nested_update(document=dict_value, key=key, value=value)

@@ -308,6 +308,14 @@ class TestGetOccurrence(TestCase):
             }]
         }
 
+        self.sample5 = {
+            "hardware_details": {
+                "model_name": 'MacBook Pro',
+                "total_number_of_cores": 0,
+                "memory": False
+            }
+        }
+
     def test_sample_data1(self):
         result = get_occurrence_of_key(self.sample1, 'build_version')
         self.assertEqual(4, result)
@@ -335,6 +343,15 @@ class TestGetOccurrence(TestCase):
         self.sample4['values'][0]['checks'][0]['monitoring_zones'].append(
             'mziad')
         self.assertEqual(2, get_occurrence_of_value(self.sample4, 'mziad'))
+
+    def test_sample_data5(self):
+        self.assertEqual(
+            1, get_occurrence_of_key(self.sample5, 'total_number_of_cores')
+        )
+        self.assertEqual(1, get_occurrence_of_key(self.sample5, 'memory'))
+        # Add key 'memory' and verify
+        self.sample5['memory'] = 0
+        self.assertEqual(2, get_occurrence_of_key(self.sample5, 'memory'))
 
 
 if __name__ == "__main__":
