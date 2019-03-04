@@ -20,7 +20,7 @@ with open('requirements.txt', 'r') as f:
 
 setup(
     name='nested-lookup',
-    version='0.2.12',
+    version='0.2.13',
     description='Python functions for working with deeply nested documents (lists and dicts) ',
     keywords='nested document dictionary dict list lookup schema json xml yaml',
     long_description=open('README.rst').read(),

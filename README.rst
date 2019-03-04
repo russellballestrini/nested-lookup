@@ -1,8 +1,10 @@
 nested_lookup
 #############
 
-.. image:: https://img.shields.io/badge/pypi-0.2.12-green.svg
+.. image:: https://img.shields.io/badge/pypi-0.2.13-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
+.. image:: https://travis-ci.org/rameshrvr/nested-lookup.svg?branch=master
+  :target: https://travis-ci.org/rameshrvr/nested-lookup
 
 Make working with JSON, YAML, and XML document responses fun again!
 
