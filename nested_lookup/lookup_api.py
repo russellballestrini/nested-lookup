@@ -4,13 +4,13 @@ from six import iteritems
 from nested_lookup import nested_lookup
 
 
-def nested_delete(document: dict, key: str, in_place: bool = False) -> dict:
+def nested_delete(document, key: str, in_place: bool = False):
     if not in_place:
         document = copy.deepcopy(document)
     return _nested_delete(document=document, key=key)
 
 
-def _nested_delete(document: dict, key: str) -> dict:
+def _nested_delete(document, key: str) -> dict:
     """
     Method to delete a key->value pair from a nested document
     Args:
@@ -18,7 +18,7 @@ def _nested_delete(document: dict, key: str) -> dict:
          Dict of List of Dicts etc...
         key: Key to delete
     Return:
-        (dict) Returns a document that includes everything but the given key
+        Returns a document that includes everything but the given key
     """
     if isinstance(document, list):
         for list_items in document:
@@ -31,9 +31,9 @@ def _nested_delete(document: dict, key: str) -> dict:
     return document
 
 
-def nested_update(document: dict, key: str, value: object,
+def nested_update(document, key: str, value: object,
                   in_place: bool = False,
-                  treat_as_element: bool = True) -> dict:
+                  treat_as_element: bool = True):
     """
     Method to update a key->value pair in a nested document
     Args:
@@ -54,7 +54,7 @@ def nested_update(document: dict, key: str, value: object,
                 will be set as value to every key that matches.
             Defaults to True (because of backwards portability of the package).
     Return:
-        (dict) Returns a document that has updated key, value pair.
+        Returns a document that has updated key, value pair.
     """
 
     # check if a list or scalar value is provided and create a list
@@ -74,7 +74,7 @@ def nested_update(document: dict, key: str, value: object,
                           val_len=val_len)
 
 
-def _nested_update(document: dict, key: str, value: object,
+def _nested_update(document, key: str, value: object,
                    val_len: int, run: int = 0):
     """
     Method to update a key->value pair in a nested document
@@ -90,7 +90,7 @@ def _nested_update(document: dict, key: str, value: object,
             the corresponding element is used for replacement purpouse.
             Defaults to 0.
     Return:
-        (dict) Returns a document that has updated key, value pair.
+        Returns a document that has updated key, value pair.
     """
     if isinstance(document, list):
         for list_items in document:
@@ -113,8 +113,9 @@ def _nested_update(document: dict, key: str, value: object,
     return document
 
 
-def nested_alter(document: dict, key: str, callback_function=None,
-                 function_parameters: list = None, in_place: bool = True):
+def nested_alter(document, key: str, callback_function=None,
+                 function_parameters: list = None, conversion_function=None,
+                 wild_alter: bool = False, in_place: bool = True):
     """
     Method to alter all values of the occurences of the key "key".
     The provided callback_function is used to alter the scalar values
@@ -128,12 +129,18 @@ def nested_alter(document: dict, key: str, callback_function=None,
         function_parameters (list):
             If the callback_function has additional input arguments except
             the scalar value, please specify those in this list.
+        conversion_function: A conversion function like str() which should be
+            applied to every found value before it is passed to the
+            "callback_function"
+        wild_alter: Find matching elements via wild-match by the given keys
+            and alter those.
+            HINT: Keep in mind that the wild-match might return unexpected types!
         in_place (bool):
             True: modify the dict in place;
             False: create a deep copy of the dict and modify it
             Defaults to False
     Return:
-        (dict) Returns a document that has updated key, value pair.
+        Returns a document that has updated key, value pair.
     """
     # check if a list or scalar value is provided and create a list from
     # the scalar value
@@ -149,30 +156,36 @@ def nested_alter(document: dict, key: str, callback_function=None,
     return _nested_alter(document=document, keys=key,
                          callback_function=callback_function,
                          function_parameters=function_parameters,
+                         conversion_function=conversion_function,
+                         wild_alter=wild_alter,
                          in_place=in_place, key_len=key_len)
 
 
 def _call_callback(value_list: list, callback_function,
-                   function_parameters: list):
-        """
-        internal helper to call the callback function
-        """
-        return_list = []
-        # loop over all values
-        for value in value_list:
-            # if functions arguments are present, expand the list to variables
-            # via the magic operator *
-            if function_parameters:
-                trans_val = callback_function(value, *function_parameters)
-            else:
-                trans_val = callback_function(value)
-            # append the transformed element to the list
-            return_list.append(trans_val)
-        return return_list
+                   function_parameters: list, conversion_function):
+    """
+    internal helper to call the callback function
+    """
+    return_list = []
+    # loop over all values
+    for value in value_list:
+        # apply the conversion function
+        if conversion_function is not None:
+            value = conversion_function(value)
+        # if functions arguments are present, expand the list to variables
+        # via the magic operator *
+        if function_parameters:
+            trans_val = callback_function(value, *function_parameters)
+        else:
+            trans_val = callback_function(value)
+        # append the transformed element to the list
+        return_list.append(trans_val)
+    return return_list
 
 
-def _nested_alter(document: dict, keys, callback_function,
-                  function_parameters: list, in_place: bool, key_len: int):
+def _nested_alter(document, keys, callback_function,
+                  function_parameters: list, conversion_function,
+                  wild_alter: bool, in_place: bool, key_len: int):
     """
     """
     # return data if no callback_function is provided
@@ -183,10 +196,11 @@ def _nested_alter(document: dict, keys, callback_function,
     # iterate over all given keys in the list
     for key in keys:
         # try to find the key:
-        findings = nested_lookup(key, document, with_keys=True)
+        findings = nested_lookup(key, document, with_keys=True, wild=wild_alter)
         for k, v in findings.items():
             trans_val = _call_callback(v, callback_function,
-                                       function_parameters)
+                                       function_parameters,
+                                       conversion_function)
             # use the transformed value and apply the update to the key
             # (dont treat the lists as elements here)
             document = nested_update(document, k, trans_val,
