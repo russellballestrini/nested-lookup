@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from nested_lookup import nested_update, nested_delete
+from nested_lookup import nested_lookup, nested_update
+from nested_lookup import nested_delete, nested_alter
 
 
 class BaseLookUpApi(TestCase):
@@ -56,11 +57,51 @@ class BaseLookUpApi(TestCase):
         }
 
         self.sample_data4 = {
-            "hardware_details": {
-                "model_name": 'MacBook Pro',
-                "total_number_of_cores": 0,
-                "memory": False
-            }
+            "modelversion": "1.1.0",
+            "vorgangsID": "1",
+            "versorgungsvorschlagDatum": 1510558834978,
+            "eingangsdatum": 1510558834978,
+            "plz": 82269,
+            "vertragsteile": [
+                {
+                    "typ": "1",
+                    "beitragsDaten": {
+                        "endalter": 85,
+                        "brutto": 58.76,
+                        "netto": 58.76,
+                        "zahlungsrhythmus": "MONATLICH",
+                        "plz": 86899
+                    },
+                    "beginn": 1512082800000,
+                    "lebenslang": "True",
+                    "ueberschussverwendung": {
+                        "ueberschussverwendung": "2",
+                        "indexoption": "3"
+                    },
+                    "deckung": [
+                        {
+                            "typ": "2",
+                            "art": "1",
+                            "leistung": {
+                                "value": 7500242424.0,
+                                "einheit": "2"
+                            },
+                            "leistungsRhythmus": "1"
+                        }
+                    ],
+                    "zuschlagNachlass": []
+                },
+                {
+                    "typ": "1",
+                    "beitragsDaten": {
+                        "endalter": 85,
+                        "brutto": 0.6,
+                        "netto": 0.6,
+                        "zahlungsrhythmus": "1"
+                    },
+                    "zuschlagNachlass": []
+                }
+            ]
         }
 
 
@@ -95,52 +136,9 @@ class TestNestedDelete(BaseLookUpApi):
             result, nested_delete(self.sample_data3, 'monitoring_zones')
         )
 
-    def test_sample_data4(self):
-        result1 = {
-            "hardware_details": {
-                "model_name": 'MacBook Pro',
-                "memory": False
-            }
-        }
-        self.assertEqual(
-            result1, nested_delete(self.sample_data4, 'total_number_of_cores')
-        )
-        result2 = {
-            "hardware_details": {
-                "model_name": 'MacBook Pro',
-                "total_number_of_cores": 0
-            }
-        }
-        self.assertEqual(
-            result2, nested_delete(self.sample_data4, 'memory')
-        )
-
-    def test_nested_delete_in_place_false(self):
-        """
-            nested_delete with in_place argument set to 'False'
-            should mutate and return a copy of the original document
-        """
-        before_id = id(self.sample_data1)
-        result = nested_delete(
-            self.sample_data1, 'build_version', in_place=False)
-        after_id = id(result)
-        # the object ids should _not_ match.
-        self.assertNotEqual(before_id, after_id)
-
-    def test_nested_delete_in_place_true(self):
-        """
-            nested_delete with in_place argument set to 'True'
-            should mutate and return the original document
-        """
-        before_id = id(self.sample_data1)
-        result = nested_delete(
-            self.sample_data1, 'build_version', in_place=True)
-        after_id = id(result)
-        # the object ids should match.
-        self.assertEqual(before_id, after_id)
-
 
 class TestNestedUpdate(BaseLookUpApi):
+
     def test_sample_data1(self):
         result = {
             "build_version": "Test1",
@@ -155,22 +153,39 @@ class TestNestedUpdate(BaseLookUpApi):
             result, nested_update(self.sample_data1, 'build_version', 'Test1')
         )
 
+    def test_sample_data1_list_input_treat_list_as_element_true(self):
+        result = {
+            "build_version": ["Test5", "Test6", "Test7"],
+            "os_details": {
+                "product_version": '10.13.6',
+                "build_version": ["Test5", "Test6", "Test7"]
+            },
+            "name": 'Test',
+            "date": 'YYYY-MM-DD HH:MM:SS'
+        }
+
+        self.assertEqual(
+            result, nested_update(
+                self.sample_data1,
+                'build_version',
+                ["Test5", "Test6", "Test7"],
+                treat_as_element=True)
+        )
+
     def test_nested_update_in_place_false(self):
         """
-            nested_update with in_place argument set to 'False'
-            should mutate and return a copy of the original document
+        ested_update should mutate and return a copy of the original document
         """
         before_id = id(self.sample_data1)
-        result = nested_update(
-            self.sample_data1, 'build_version', 'Test2', in_place=False)
+        result = nested_update(self.sample_data1, 'build_version', 'Test2',
+                               in_place=False)
         after_id = id(result)
         # the object ids should _not_ match.
         self.assertNotEqual(before_id, after_id)
 
     def test_nested_update_in_place_true(self):
         """
-            nested_update with in_place argument set to 'True'
-            should mutate and return the original document
+        nested_update should mutate and return the original document
         """
         before_id = id(self.sample_data1)
         result = nested_update(
@@ -178,6 +193,146 @@ class TestNestedUpdate(BaseLookUpApi):
         after_id = id(result)
         # the object ids should match.
         self.assertEqual(before_id, after_id)
+
+    def test_nested_update_in_place_true_list_input(self):
+        doc = self.sample_data4
+        # get all instances of the given element
+        findings = nested_lookup("plz", doc, False, True)
+        # alter those instances
+        updated_findings = list()
+        for key, val in findings.items():
+            for elem in val:
+                updated_findings.append(elem + 300)
+        # update those instances with the altered results
+        doc_updated = nested_update(
+            doc, "plz", updated_findings, treat_as_element=False)
+        elem1 = doc_updated["plz"]  # 85269
+        # 87199
+        elem2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        self.assertEqual(elem1, 82569)
+        self.assertEqual(elem2, 87199)
+
+    def test_nested_update_in_place_false_list_input(self):
+        doc = self.sample_data4
+        # get all instances of the given element
+        findings = nested_lookup("plz", doc, False, True)
+        # alter those instances
+        updated_findings = list()
+        for key, val in findings.items():
+            for elem in val:
+                updated_findings.append(elem + 300)
+        # update those instances with the altered results
+        doc_updated = nested_update(
+            doc, "plz", updated_findings, in_place=False,
+            treat_as_element=False)
+        elem1 = doc_updated["plz"]
+        elem2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        self.assertEqual(elem1, 82569)
+        self.assertEqual(elem2, 87199)
+
+    def test_nested_update_in_place_false_list_input_as_element_false(self):
+        doc = self.sample_data4
+        # get all instances of the given element
+        list_input = [1, 2, 3, 4, 5]
+        # update those instances with the altered results
+        doc_updated = nested_update(
+            doc, "plz", list_input, in_place=False, treat_as_element=False)
+        elem1 = doc_updated["plz"]
+        elem2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        # should not work without specifying "treat_list_as_element = True"
+        # in nested_update
+        self.assertNotEqual(elem1, list_input)
+        self.assertNotEqual(elem2, list_input)
+
+    def test_nested_update_in_place_false_list_input_as_element_true(self):
+        doc = self.sample_data4
+        # get all instances of the given element
+        list_input = [1, 2, 3, 4, 5]
+        # update those instances with the altered results
+        doc_updated = nested_update(
+            doc, "plz", list_input, in_place=False, treat_as_element=True)
+        elem1 = doc_updated["plz"]
+        elem2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        # should not work without specifying "treat_list_as_element = True"
+        # in nested_update
+        self.assertEqual(elem1, list_input)
+        self.assertEqual(elem2, list_input)
+
+    def test_nested_update_in_place_true_list_input_as_element_false(self):
+        doc = self.sample_data4
+        # get all instances of the given element
+        list_input = [1, 2, 3, 4, 5]
+        # update those instances with the altered results
+        doc_updated = nested_update(
+            doc, "plz", list_input, in_place=True, treat_as_element=False)
+        elem1 = doc_updated["plz"]
+        elem2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        # should not work without specifying "treat_list_as_element = True"
+        # in nested_update
+        self.assertNotEqual(elem1, list_input)
+        self.assertNotEqual(elem2, list_input)
+
+    def test_nested_update_in_place_true_list_input_as_element_true(self):
+        doc = self.sample_data4
+        # get all instances of the given element
+        list_input = [1, 2, 3, 4, 5]
+        # update those instances with the altered results
+        doc_updated = nested_update(
+            doc, "plz", list_input, in_place=True, treat_as_element=True)
+        elem1 = doc_updated["plz"]
+        elem2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        # should not work without specifying "treat_list_as_element = True"
+        # in nested_update
+        self.assertEqual(elem1, list_input)
+        self.assertEqual(elem2, list_input)
+
+    def test_nested_delete_in_place_false(self):
+        """
+        nested_delete should mutate and return a copy of the original document
+        """
+        before_id = id(self.sample_data1)
+        result = nested_delete(
+            self.sample_data1, 'build_version', in_place=False)
+        after_id = id(result)
+        # the object ids should _not_ match.
+        self.assertNotEqual(before_id, after_id)
+
+    def test_nested_delete_in_place_true(self):
+        """nested_delete should mutate and return the original document"""
+        before_id = id(self.sample_data1)
+        result = nested_delete(
+            self.sample_data1, 'build_version', in_place=True)
+        after_id = id(result)
+        # the object ids should match.
+        self.assertEqual(before_id, after_id)
+
+    def test_nested_update_taco_for_example(self):
+        document = [
+            {'taco': 42},
+            {'salsa': [{'burrito': {'taco': 69}}]}
+        ]
+
+        updated_document = nested_update(
+            document, "taco", [100, 200], treat_as_element=False)
+
+        self.assertEqual(updated_document[0]["taco"], 100)
+        # The multi-update version only works for scalar input,
+        # if you need to adress a list of dicts, you have to
+        # manually iterate over those and pass them to nested_update
+        # one by one
+        self.assertNotEqual(
+            updated_document[1]["salsa"][0]["burrito"]["taco"], 200)
+
+    def test_nested_update_raise_error(self):
+        doc = self.sample_data4
+        # get all instances of the given element
+        list_input = 1
+        # update those instances with the altered results
+        self.assertRaises(
+            Exception,
+            nested_update, doc, "plz", list_input,
+            in_place=True, treat_as_element=False
+        )
 
     def test_sample_data2(self):
         result = {
@@ -217,28 +372,264 @@ class TestNestedUpdate(BaseLookUpApi):
         )
 
     def test_sample_data4(self):
-        result1 = {
-            "hardware_details": {
-                "model_name": 'MacBook Pro',
-                "total_number_of_cores": 1,
-                "memory": False
-            }
+        result = {
+            "modelversion": {
+                'key1': ['value1'],
+                'key2': 'value2'
+            },
+            "vorgangsID": "1",
+            "versorgungsvorschlagDatum": 1510558834978,
+            "eingangsdatum": 1510558834978,
+            "plz": 82269,
+            "vertragsteile": [
+                {
+                    "typ": "1",
+                    "beitragsDaten": {
+                        "endalter": 85,
+                        "brutto": 58.76,
+                        "netto": 58.76,
+                        "zahlungsrhythmus": "MONATLICH",
+                        "plz": 86899
+                    },
+                    "beginn": 1512082800000,
+                    "lebenslang": "True",
+                    "ueberschussverwendung": {
+                        "ueberschussverwendung": "2",
+                        "indexoption": "3"
+                    },
+                    "deckung": [
+                        {
+                            "typ": "2",
+                            "art": "1",
+                            "leistung": {
+                                "value": 7500242424.0,
+                                "einheit": "2"
+                            },
+                            "leistungsRhythmus": "1"
+                        }
+                    ],
+                    "zuschlagNachlass": []
+                },
+                {
+                    "typ": "1",
+                    "beitragsDaten": {
+                        "endalter": 85,
+                        "brutto": 0.6,
+                        "netto": 0.6,
+                        "zahlungsrhythmus": "1"
+                    },
+                    "zuschlagNachlass": []
+                }
+            ]
         }
         self.assertEqual(
-            result1, nested_update(
-                self.sample_data4, key='total_number_of_cores',
-                value=1
+            result, nested_update(
+                self.sample_data4, 'modelversion',
+                {
+                    'key1': ['value1'],
+                    'key2': 'value2'
+                }
             )
         )
-        result2 = {
-            "hardware_details": {
-                "model_name": 'MacBook Pro',
-                "total_number_of_cores": 0,
-                "memory": True
-            }
+
+
+class TestNestedAlter(BaseLookUpApi):
+
+    def test_nested_alter_in_place_true(self):
+
+        # callback functions
+        def callback(data):
+            return str(data) + "###"
+
+        doc_updated = nested_alter(
+            self.sample_data4, "vorgangsID", callback, in_place=True)
+
+        vorgangsid = doc_updated["vorgangsID"]
+
+        self.assertEqual(vorgangsid, "1###")
+
+    def test_nested_alter_in_place_false(self):
+
+        # callback functions
+        def callback(data):
+            return str(data) + "###"
+
+        doc_updated = nested_alter(
+            self.sample_data4, "vorgangsID", callback, in_place=False)
+
+        vorgangsid = doc_updated["vorgangsID"]
+
+        # should not work without specifying
+        # "treat_list_as_element = True" in nested_update
+        self.assertEqual(vorgangsid, "1###")
+
+    def test_nested_alter_list_input_in_place_true(self):
+
+        # callback functions
+        def callback(data):
+            return str(data) + "###"
+
+        doc_updated = nested_alter(
+            self.sample_data4, ["plz", "vorgangsID"], callback, in_place=True)
+
+        plz1 = doc_updated["plz"]
+        plz2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        vorgangsid = doc_updated["vorgangsID"]
+
+        # should not work without specifying
+        # "treat_list_as_element = True" in nested_update
+        self.assertEqual(plz1, "82269###")
+        self.assertEqual(plz2, "86899###")
+        self.assertEqual(vorgangsid, "1###")
+
+    def test_nested_alter_list_input_with_args_in_place_true(self):
+
+        # callback functions
+        def callback(data, str1, str2):
+            return str(data) + str1 + str2
+
+        doc_updated = nested_alter(self.sample_data4, [
+                                   "plz", "vorgangsID"],
+                                   callback,
+                                   function_parameters=["abc", "def"],
+                                   in_place=True
+                                   )
+
+        plz1 = doc_updated["plz"]
+        plz2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        vorgangsid = doc_updated["vorgangsID"]
+
+        # should not work without specifying
+        # "treat_list_as_element = True" in nested_update
+        self.assertEqual(plz1, "82269abcdef")
+        self.assertEqual(plz2, "86899abcdef")
+        self.assertEqual(vorgangsid, "1abcdef")
+
+    def test_nested_alter_list_input_with_args_in_place_false(self):
+
+        # callback functions
+        def callback(data, str1, str2):
+            return str(data) + str1 + str2
+
+        doc_updated = nested_alter(self.sample_data4, [
+                                   "plz", "vorgangsID"],
+                                   callback,
+                                   function_parameters=["abc", "def"],
+                                   in_place=False
+                                   )
+
+        plz1 = doc_updated["plz"]
+        plz2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        vorgangsid = doc_updated["vorgangsID"]
+
+        # should not work without specifying
+        # "treat_list_as_element = True" in nested_update
+        self.assertEqual(plz1, "82269abcdef")
+        self.assertEqual(plz2, "86899abcdef")
+        self.assertEqual(vorgangsid, "1abcdef")
+
+    def test_nested_alter_list_input_in_place_false(self):
+
+        # callback functions
+        def callback(data):
+            return str(data) + "###"
+
+        doc_updated = nested_alter(
+            self.sample_data4, ["plz", "vorgangsID"], callback, in_place=False)
+
+        plz1 = doc_updated["plz"]
+        plz2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        vorgangsid = doc_updated["vorgangsID"]
+
+        # should not work without specifying
+        # "treat_list_as_element = True" in nested_update
+        self.assertEqual(plz1, "82269###")
+        self.assertEqual(plz2, "86899###")
+        self.assertEqual(vorgangsid, "1###")
+
+    def test_nested_alter_taco_for_example(self):
+        documents = [
+            {'taco': 42},
+            {'salsa': [{'burrito': {'taco': 69}}]}
+        ]
+
+        # write a callback function which processes a scalar value.
+        # Be aware about the possible types which can be passed to
+        # the callback functions.
+        # In this example we can be sure that only int will be passed,
+        # in production you should check the type because it could be
+        # anything.
+        def callback(data):
+            return data + 10  # (data/100*10)
+
+        # The alter-version only works for scalar input (one dict),
+        # if you need to adress a list of dicts, you have to
+        # manually iterate over those and pass them to
+        # nested_update one by one
+        out = []
+        for elem in documents:
+            altered_document = nested_alter(elem, "taco", callback)
+            out.append(altered_document)
+
+        self.maxDiff = None
+        self.assertEqual(out[0]["taco"], 52)
+        self.assertEqual(out[1]["salsa"][0]["burrito"]["taco"], 79)
+
+    def test_sample_data4(self):
+
+        result = {
+            "modelversion": "1.1.0",
+            "vorgangsID": "1",
+            "versorgungsvorschlagDatum": 1510558834978,
+            "eingangsdatum": 1510558834978,
+            "plz": 82270,
+            "vertragsteile": [
+                {
+                    "typ": "1",
+                    "beitragsDaten": {
+                        "endalter": 85,
+                        "brutto": 58.76,
+                        "netto": 58.76,
+                        "zahlungsrhythmus": "MONATLICH",
+                        "plz": 86900
+                    },
+                    "beginn": 1512082800000,
+                    "lebenslang": "True",
+                    "ueberschussverwendung": {
+                        "ueberschussverwendung": "2",
+                        "indexoption": "3"
+                    },
+                    "deckung": [
+                        {
+                            "typ": "2",
+                            "art": "1",
+                            "leistung": {
+                                "value": 7500242424.0,
+                                "einheit": "2"
+                            },
+                            "leistungsRhythmus": "1"
+                        }
+                    ],
+                    "zuschlagNachlass": []
+                },
+                {
+                    "typ": "1",
+                    "beitragsDaten": {
+                        "endalter": 85,
+                        "brutto": 0.6,
+                        "netto": 0.6,
+                        "zahlungsrhythmus": "1"
+                    },
+                    "zuschlagNachlass": []
+                }
+            ]
         }
+
+        # add +1 to all plz
+        def callback(data):
+            return data + 1
+
+        self.maxDiff = None
         self.assertEqual(
-            result2, nested_update(
-                self.sample_data4, key='memory', value=True
-            )
+            result, nested_alter(self.sample_data4, 'plz', callback)
         )
