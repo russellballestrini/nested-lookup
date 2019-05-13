@@ -54,21 +54,17 @@ def get_all_keys(dictionary):
     """
     result_list = []
 
-    def recrusion(dictionary):
-        for key, value in iteritems(dictionary):
-            if isinstance(value, dict):
+    def recrusion(document):
+        if isinstance(document, list):
+            for list_items in document:
+                recrusion(document=list_items)
+        elif isinstance(document, dict):
+            for key, value in iteritems(document):
                 result_list.append(key)
-                recrusion(dictionary=value)
-            elif isinstance(value, list):
-                result_list.append(key)
-                for list_items in value:
-                    # Make sure the items inside the list is iterable
-                    if hasattr(list_items, 'items'):
-                        recrusion(dictionary=list_items)
-            else:
-                result_list.append(key)
+                recrusion(document=value)
+        return
 
-    recrusion(dictionary=dictionary)
+    recrusion(document=dictionary)
     return result_list
 
 
