@@ -4,13 +4,13 @@ from six import iteritems
 from nested_lookup import nested_lookup
 
 
-def nested_delete(document, key: str, in_place: bool = False):
+def nested_delete(document, key, in_place=False):
     if not in_place:
         document = copy.deepcopy(document)
     return _nested_delete(document=document, key=key)
 
 
-def _nested_delete(document, key: str) -> dict:
+def _nested_delete(document, key):
     """
     Method to delete a key->value pair from a nested document
     Args:
@@ -31,9 +31,9 @@ def _nested_delete(document, key: str) -> dict:
     return document
 
 
-def nested_update(document, key: str, value: object,
-                  in_place: bool = False,
-                  treat_as_element: bool = True):
+def nested_update(
+    document, key, value, in_place=False, treat_as_element=True
+):
     """
     Method to update a key->value pair in a nested document
     Args:
@@ -74,8 +74,9 @@ def nested_update(document, key: str, value: object,
                           val_len=val_len)
 
 
-def _nested_update(document, key: str, value: object,
-                   val_len: int, run: int = 0):
+def _nested_update(
+    document, key, value, val_len, run=0
+):
     """
     Method to update a key->value pair in a nested document
     Args:
@@ -113,9 +114,10 @@ def _nested_update(document, key: str, value: object,
     return document
 
 
-def nested_alter(document, key: str, callback_function=None,
-                 function_parameters: list = None, conversion_function=None,
-                 wild_alter: bool = False, in_place: bool = True):
+def nested_alter(
+    document, key, callback_function=None, function_parameters=None,
+    conversion_function=None, wild_alter=False, in_place=True
+):
     """
     Method to alter all values of the occurences of the key "key".
     The provided callback_function is used to alter the scalar values
@@ -134,7 +136,7 @@ def nested_alter(document, key: str, callback_function=None,
             "callback_function"
         wild_alter: Find matching elements via wild-match by the given keys
             and alter those.
-            HINT: Keep in mind that the wild-match might return unexpected types!
+        HINT: Keep in mind that the wild-match might return unexpected types!
         in_place (bool):
             True: modify the dict in place;
             False: create a deep copy of the dict and modify it
@@ -161,8 +163,10 @@ def nested_alter(document, key: str, callback_function=None,
                          in_place=in_place, key_len=key_len)
 
 
-def _call_callback(value_list: list, callback_function,
-                   function_parameters: list, conversion_function):
+def _call_callback(
+    value_list, callback_function, function_parameters,
+    conversion_function
+):
     """
     internal helper to call the callback function
     """
@@ -183,9 +187,10 @@ def _call_callback(value_list: list, callback_function,
     return return_list
 
 
-def _nested_alter(document, keys, callback_function,
-                  function_parameters: list, conversion_function,
-                  wild_alter: bool, in_place: bool, key_len: int):
+def _nested_alter(
+    document, keys, callback_function, function_parameters,
+    conversion_function, wild_alter, in_place, key_len
+):
     """
     """
     # return data if no callback_function is provided
@@ -196,7 +201,9 @@ def _nested_alter(document, keys, callback_function,
     # iterate over all given keys in the list
     for key in keys:
         # try to find the key:
-        findings = nested_lookup(key, document, with_keys=True, wild=wild_alter)
+        findings = nested_lookup(
+            key, document, with_keys=True, wild=wild_alter
+        )
         for k, v in findings.items():
             trans_val = _call_callback(v, callback_function,
                                        function_parameters,
