@@ -193,6 +193,16 @@ class TestGetAllKeys(TestCase):
                 }]
             }]
         }
+        self.sample5 = [{
+            "listings": [{
+                "name": "title",
+                "postcode": "postcode",
+                "full_address": "fulladdress",
+                "city": "city",
+                "lat": "latitude",
+                "lng": "longitude"
+            }]
+        }]
 
     def test_sample_data1(self):
         result = get_all_keys(self.sample1)
@@ -238,6 +248,16 @@ class TestGetAllKeys(TestCase):
             "values",
             "checks",
             "monitoring_zones"
+        ]
+        for key in keys_to_verify:
+            self.assertIn(key, result)
+
+    def test_sample_data5(self):
+        result = get_all_keys(self.sample5)
+        self.assertEqual(7, len(result))
+        keys_to_verify = [
+            'listings', 'name', 'postcode', 'full_address', 'city',
+            'lat', 'lng'
         ]
         for key in keys_to_verify:
             self.assertIn(key, result)
