@@ -7,9 +7,7 @@ def nested_lookup(key, document, wild=False, with_keys=False):
     """Lookup a key in a nested document, return a list of values"""
     if with_keys:
         d = defaultdict(list)
-        for k, v in _nested_lookup(
-            key, document, wild=wild, with_keys=with_keys
-        ):
+        for k, v in _nested_lookup(key, document, wild=wild, with_keys=with_keys):
             d[k].append(v)
         return d
     return list(_nested_lookup(key, document, wild=wild, with_keys=with_keys))
@@ -19,9 +17,7 @@ def _nested_lookup(key, document, wild=False, with_keys=False):
     """Lookup a key in a nested document, yield a value"""
     if isinstance(document, list):
         for d in document:
-            for result in _nested_lookup(
-                key, d, wild=wild, with_keys=with_keys
-            ):
+            for result in _nested_lookup(key, d, wild=wild, with_keys=with_keys):
                 yield result
 
     if isinstance(document, dict):
@@ -32,9 +28,7 @@ def _nested_lookup(key, document, wild=False, with_keys=False):
                 else:
                     yield v
             if isinstance(v, dict):
-                for result in _nested_lookup(
-                    key, v, wild=wild, with_keys=with_keys
-                ):
+                for result in _nested_lookup(key, v, wild=wild, with_keys=with_keys):
                     yield result
             elif isinstance(v, list):
                 for d in v:
@@ -78,7 +72,7 @@ def get_occurrence_of_key(dictionary, key):
     Return:
         Number of occurrence (Integer)
     """
-    return _get_occurrence(dictionary=dictionary, item='key', keyword=key)
+    return _get_occurrence(dictionary=dictionary, item="key", keyword=key)
 
 
 def get_occurrence_of_value(dictionary, value):
@@ -91,7 +85,7 @@ def get_occurrence_of_value(dictionary, value):
     Return:
         Number of occurrence (Integer)
     """
-    return _get_occurrence(dictionary=dictionary, item='value', keyword=value)
+    return _get_occurrence(dictionary=dictionary, item="value", keyword=value)
 
 
 def _get_occurrence(dictionary, item, keyword):
@@ -108,7 +102,7 @@ def _get_occurrence(dictionary, item, keyword):
     occurrence = [0]
 
     def recrusion(dictionary):
-        if item == 'key':
+        if item == "key":
             if dictionary.get(keyword) is not None:
                 occurrence[0] += 1
         elif keyword in list(dictionary.values()):
@@ -118,10 +112,10 @@ def _get_occurrence(dictionary, item, keyword):
                 recrusion(dictionary=value)
             elif isinstance(value, list):
                 for list_items in value:
-                    if hasattr(list_items, 'items'):
+                    if hasattr(list_items, "items"):
                         recrusion(dictionary=list_items)
                     elif list_items == keyword:
-                        occurrence[0] += 1 if item == 'value' else 0
+                        occurrence[0] += 1 if item == "value" else 0
 
     recrusion(dictionary=dictionary)
     return occurrence[0]
