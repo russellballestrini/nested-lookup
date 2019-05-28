@@ -1,7 +1,8 @@
 nested_lookup
 #############
 
-.. image:: https://img.shields.io/badge/pypi-0.2.14-green.svg
+
+.. image:: https://img.shields.io/badge/pypi-0.2.15-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
 .. image:: https://travis-ci.org/rameshrvr/nested-lookup.svg?branch=master
   :target: https://travis-ci.org/rameshrvr/nested-lookup
@@ -89,21 +90,21 @@ In this example we can be sure that only int will be passed, in production you s
 
 .. code-block:: python
 
->>> def callback(data):
->>>     return data + 10 # add 10 to every taco prize
+ >>> def callback(data):
+ >>>     return data + 10 # add 10 to every taco prize
 
 The alter-version only works for scalar input (one dict), if you need to adress a list of dicts, you have to 
 manually iterate over those and pass them to nested_update one by one
 
 .. code-block:: python
 
->>> out =[]
->>> for elem in document:
->>>     altered_document = nested_alter(elem,"taco", callback)
->>>    out.append(altered_document)
+ >>> out =[]
+ >>> for elem in document:
+ >>>     altered_document = nested_alter(elem,"taco", callback)
+ >>>     out.append(altered_document)
 
->>> print(out)
-[ { 'taco' : 52 } , { 'salsa' : [ { 'burrito' : { 'taco' : 79 } } ] } ]
+ >>> print(out)
+ [ { 'taco' : 52 } , { 'salsa' : [ { 'burrito' : { 'taco' : 79 } } ] } ]
 
  >>> from nested_lookup import get_all_keys
 

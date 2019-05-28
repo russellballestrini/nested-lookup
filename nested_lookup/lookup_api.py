@@ -31,9 +31,8 @@ def _nested_delete(document, key):
     return document
 
 
-def nested_update(
-    document, key, value, in_place=False, treat_as_element=True
-):
+
+def nested_update(document, key, value, in_place=False, treat_as_element=True):
     """
     Method to update a key->value pair in a nested document
     Args:
@@ -61,8 +60,9 @@ def nested_update(
     # from the scalar value
     # check the length of the list and provide it to _nested_update
     if not treat_as_element and not isinstance(value, list):
-        raise Exception('You need to pass value as list if you opt for' +
-                        'this feature')
+        raise Exception(
+            "You need to pass value as list if you opt for" + "this feature"
+        )
     elif treat_as_element:
         value = [value]
 
@@ -70,13 +70,10 @@ def nested_update(
 
     if not in_place:
         document = copy.deepcopy(document)
-    return _nested_update(document=document, key=key, value=value,
-                          val_len=val_len)
+    return _nested_update(document=document, key=key, value=value, val_len=val_len)
 
 
-def _nested_update(
-    document, key, value, val_len, run=0
-):
+def _nested_update(document, key, value, val_len, run=0):
     """
     Method to update a key->value pair in a nested document
     Args:
@@ -95,8 +92,9 @@ def _nested_update(
     """
     if isinstance(document, list):
         for list_items in document:
-            _nested_update(document=list_items, key=key, value=value,
-                           val_len=val_len, run=run)
+            _nested_update(
+                document=list_items, key=key, value=value, val_len=val_len, run=run
+            )
     elif isinstance(document, dict):
         if document.get(key):
             # check if a value with the coresponding index exists and
@@ -109,14 +107,20 @@ def _nested_update(
             document[key] = val
             run = run + 1
         for dict_key, dict_value in iteritems(document):
-            _nested_update(document=dict_value, key=key, value=value,
-                           val_len=val_len, run=run)
+            _nested_update(
+                document=dict_value, key=key, value=value, val_len=val_len, run=run
+            )
     return document
 
 
 def nested_alter(
-    document, key, callback_function=None, function_parameters=None,
-    conversion_function=None, wild_alter=False, in_place=True
+    document,
+    key,
+    callback_function=None,
+    function_parameters=None,
+    conversion_function=None,
+    wild_alter=False,
+    in_place=True,
 ):
     """
     Method to alter all values of the occurences of the key "key".
@@ -155,17 +159,20 @@ def nested_alter(
 
     if not in_place:
         document = copy.deepcopy(document)
-    return _nested_alter(document=document, keys=key,
-                         callback_function=callback_function,
-                         function_parameters=function_parameters,
-                         conversion_function=conversion_function,
-                         wild_alter=wild_alter,
-                         in_place=in_place, key_len=key_len)
+    return _nested_alter(
+        document=document,
+        keys=key,
+        callback_function=callback_function,
+        function_parameters=function_parameters,
+        conversion_function=conversion_function,
+        wild_alter=wild_alter,
+        in_place=in_place,
+        key_len=key_len,
+    )
 
 
 def _call_callback(
-    value_list, callback_function, function_parameters,
-    conversion_function
+    value_list, callback_function, function_parameters, conversion_function
 ):
     """
     internal helper to call the callback function
@@ -188,8 +195,14 @@ def _call_callback(
 
 
 def _nested_alter(
-    document, keys, callback_function, function_parameters,
-    conversion_function, wild_alter, in_place, key_len
+    document,
+    keys,
+    callback_function,
+    function_parameters,
+    conversion_function,
+    wild_alter,
+    in_place,
+    key_len,
 ):
     """
     """
@@ -205,13 +218,13 @@ def _nested_alter(
             key, document, with_keys=True, wild=wild_alter
         )
         for k, v in findings.items():
-            trans_val = _call_callback(v, callback_function,
-                                       function_parameters,
-                                       conversion_function)
+            trans_val = _call_callback(
+                v, callback_function, function_parameters, conversion_function
+            )
             # use the transformed value and apply the update to the key
             # (dont treat the lists as elements here)
-            document = nested_update(document, k, trans_val,
-                                     in_place=in_place,
-                                     treat_as_element=False)
+            document = nested_update(
+                document, k, trans_val, in_place=in_place, treat_as_element=False
+            )
 
     return document
