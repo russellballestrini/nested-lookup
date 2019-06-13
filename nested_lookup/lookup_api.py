@@ -71,8 +71,8 @@ def nested_update(document, key, value, in_place=False, treat_as_element=True):
         document = copy.deepcopy(document)
     return _nested_update(document=document, key=key, value=value, val_len=val_len)
 
-
-def _nested_update(document, key, value, val_len, run=0):
+# Add a reference counter for recursion(run)
+def _nested_update(document, key, value, val_len, run=[0]):
     """
     Method to update a key->value pair in a nested document
     Args:
@@ -91,24 +91,22 @@ def _nested_update(document, key, value, val_len, run=0):
     """
     if isinstance(document, list):
         for list_items in document:
-            _nested_update(
-                document=list_items, key=key, value=value, val_len=val_len, run=run
-            )
+            _nested_update(document=list_items, key=key, value=value,
+                           val_len=val_len, run=run)
     elif isinstance(document, dict):
         if document.get(key):
             # check if a value with the coresponding index exists and
             # use it otherwise recycle the intially given value
-            if run < val_len:
-                val = value[run]
+            if run[0] < val_len:
+                val = value[run[0]]
             else:
-                run = 0
-                val = value[run]
+                run[0] = 0
+                val = value[run[0]]
             document[key] = val
-            run = run + 1
+            run[0] = run[0] + 1
         for dict_key, dict_value in iteritems(document):
-            _nested_update(
-                document=dict_value, key=key, value=value, val_len=val_len, run=run
-            )
+            _nested_update(document=dict_value, key=key, value=value,
+                           val_len=val_len, run=run)
     return document
 
 
