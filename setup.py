@@ -17,7 +17,7 @@ with open("requirements.txt", "r") as f:
 
 setup(
     name="nested-lookup",
-    version="0.2.15",
+    version="0.2.16",
     description="Python functions for working with deeply nested documents (lists and dicts) ",
     keywords="nested document dictionary dict list lookup schema json xml yaml",
     long_description=open("README.rst").read(),
@@ -45,6 +45,4 @@ setup(
 # build package:
 # pip install twine
 # python setup.py sdist
-
-# built and uploaded to pypi with this:
-# python setup.py sdist bdist_egg register upload
+# twine upload dist/*

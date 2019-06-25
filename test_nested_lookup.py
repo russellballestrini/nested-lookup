@@ -38,6 +38,7 @@ class TestNestedLookup(TestCase):
             "name": "Test",
             "date": "YYYY-MM-DD HH:MM:SS",
         }
+        self.subject_dict4 = {1: "a", 2: {"b": 44, "C": 55}, 3: "d", 4: "e"}
 
     def test_nested_lookup(self):
         results = nested_lookup("d", self.subject_dict)
@@ -73,6 +74,10 @@ class TestNestedLookup(TestCase):
         self.assertIn("test1@example.com", results)
         self.assertIn("test2@example.com", results)
         self.assertIn("test3@example.com", results)
+
+        # test that wild works with a document that has integers as keys.
+        results = nested_lookup(key="c", document=self.subject_dict4, wild=True)
+        self.assertIn(55, results)
 
     def test_wild_with_keys_nested_lookup(self):
         matches = nested_lookup(
