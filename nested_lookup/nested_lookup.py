@@ -15,7 +15,7 @@ def nested_lookup(key, document, wild=False, with_keys=False):
 
 def _is_case_insensitive_substring(a, b):
     """return True if `a` is a case insensitive substring of `b`, else False"""
-    return isinstance(a, str) and isinstance(b, str) and a.lower() in b.lower()
+    return str(a).lower() in str(b).lower()
 
 
 def _nested_lookup(key, document, wild=False, with_keys=False):
