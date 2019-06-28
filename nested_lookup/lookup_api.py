@@ -72,7 +72,7 @@ def nested_update(document, key, value, in_place=False, treat_as_element=True):
     return _nested_update(document=document, key=key, value=value, val_len=val_len)
 
 
-def _nested_update(document, key, value, val_len, run=0):
+def _nested_update(document, key, value, val_len, run={"counter": 0}):
     """
     Method to update a key->value pair in a nested document
     Args:
@@ -95,16 +95,17 @@ def _nested_update(document, key, value, val_len, run=0):
                 document=list_items, key=key, value=value, val_len=val_len, run=run
             )
     elif isinstance(document, dict):
-        if document.get(key):
+        if document.has_key(key):
             # check if a value with the coresponding index exists and
             # use it otherwise recycle the intially given value
             if run < val_len:
-                val = value[run]
+                val = value[run["counter"]]
+            # you get an error value in this key
             else:
-                run = 0
-                val = value[run]
+                run["counter"] = 0
+                val = value[run["counter"]]
             document[key] = val
-            run = run + 1
+            run["counter"] += 1
         for dict_key, dict_value in iteritems(document):
             _nested_update(
                 document=dict_value, key=key, value=value, val_len=val_len, run=run
