@@ -261,7 +261,7 @@ class TestNestedUpdate(BaseLookUpApi):
         )
         elem1 = doc_updated["plz"]
         elem2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
-        # should not work without specifying "treat_list_as_element = True"
+        # should not work without specifying "treat_list_as_element = False"
         # in nested_update
         self.assertNotEqual(elem1, list_input)
         self.assertNotEqual(elem2, list_input)
@@ -311,7 +311,7 @@ class TestNestedUpdate(BaseLookUpApi):
         # if you need to adress a list of dicts, you have to
         # manually iterate over those and pass them to nested_update
         # one by one
-        self.assertNotEqual(updated_document[1]["salsa"][0]["burrito"]["taco"], 200)
+        self.assertEqual(updated_document[1]["salsa"][0]["burrito"]["taco"], 200)
 
     def test_nested_update_raise_error(self):
         doc = self.sample_data4

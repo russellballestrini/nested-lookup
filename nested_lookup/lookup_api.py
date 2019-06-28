@@ -69,10 +69,10 @@ def nested_update(document, key, value, in_place=False, treat_as_element=True):
 
     if not in_place:
         document = copy.deepcopy(document)
-    return _nested_update(document=document, key=key, value=value, val_len=val_len)
+    return _nested_update(document=document, key=key, value=value, val_len=val_len, run={"counter": 0})
 
 
-def _nested_update(document, key, value, val_len, run={"counter": 0}):
+def _nested_update(document, key, value, val_len, run):
     """
     Method to update a key->value pair in a nested document
     Args:
@@ -98,7 +98,7 @@ def _nested_update(document, key, value, val_len, run={"counter": 0}):
         if document.has_key(key):
             # check if a value with the coresponding index exists and
             # use it otherwise recycle the intially given value
-            if run < val_len:
+            if run["counter"] < val_len:
                 val = value[run["counter"]]
             # you get an error value in this key
             else:
