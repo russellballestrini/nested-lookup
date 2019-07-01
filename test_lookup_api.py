@@ -1,5 +1,5 @@
 from unittest import TestCase
-
+import copy
 from nested_lookup import nested_lookup, nested_update
 from nested_lookup import nested_delete, nested_alter
 
@@ -83,7 +83,11 @@ class BaseLookUpApi(TestCase):
                         {
                             "typ": "2",
                             "art": "1",
-                            "leistung": {"value": 7500242424.0, "einheit": "2"},
+                            "leistung": {
+                                "value": 7500242424.0,
+                                "einheit": "2",
+                                "plz": 84499
+                            },
                             "leistungsRhythmus": "1",
                         }
                     ],
@@ -185,7 +189,7 @@ class TestNestedUpdate(BaseLookUpApi):
         self.assertEqual(before_id, after_id)
 
     def test_nested_update_in_place_true_list_input(self):
-        doc = self.sample_data4
+        doc = copy.deepcopy(self.sample_data4)
         # get all instances of the given element
         findings = nested_lookup("plz", doc, False, True)
         # alter those instances
@@ -193,15 +197,18 @@ class TestNestedUpdate(BaseLookUpApi):
         for key, val in findings.items():
             for elem in val:
                 updated_findings.append(elem + 300)
-        # update those instances with the altered results
-        doc_updated = nested_update(
-            doc, "plz", updated_findings, treat_as_element=False
+        # In_plcae = True should modify the original document
+        nested_update(
+            doc, "plz", updated_findings, treat_as_element=False,
+            in_place=True
         )
-        elem1 = doc_updated["plz"]  # 85269
+        elem1 = doc["plz"]  # 85269
         # 87199
-        elem2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        elem2 = doc["vertragsteile"][0]["beitragsDaten"]["plz"]
+        elem3 = doc["vertragsteile"][0]["deckung"][0]["leistung"]["plz"]
         self.assertEqual(elem1, 82569)
         self.assertEqual(elem2, 87199)
+        self.assertEqual(elem3, 84799)
 
     def test_nested_update_in_place_false_list_input(self):
         doc = self.sample_data4
@@ -218,8 +225,10 @@ class TestNestedUpdate(BaseLookUpApi):
         )
         elem1 = doc_updated["plz"]
         elem2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        elem3 = doc_updated["vertragsteile"][0]["deckung"][0]["leistung"]["plz"]
         self.assertEqual(elem1, 82569)
         self.assertEqual(elem2, 87199)
+        self.assertEqual(elem3, 84799)
 
     def test_nested_update_in_place_false_list_input_as_element_false(self):
         doc = self.sample_data4
@@ -252,30 +261,30 @@ class TestNestedUpdate(BaseLookUpApi):
         self.assertEqual(elem2, list_input)
 
     def test_nested_update_in_place_true_list_input_as_element_false(self):
-        doc = self.sample_data4
+        doc = copy.deepcopy(self.sample_data4)
         # get all instances of the given element
         list_input = [1, 2, 3, 4, 5]
         # update those instances with the altered results
-        doc_updated = nested_update(
+        nested_update(
             doc, "plz", list_input, in_place=True, treat_as_element=False
         )
-        elem1 = doc_updated["plz"]
-        elem2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        elem1 = doc["plz"]
+        elem2 = doc["vertragsteile"][0]["beitragsDaten"]["plz"]
         # should not work without specifying "treat_list_as_element = True"
         # in nested_update
         self.assertNotEqual(elem1, list_input)
         self.assertNotEqual(elem2, list_input)
 
     def test_nested_update_in_place_true_list_input_as_element_true(self):
-        doc = self.sample_data4
+        doc = copy.deepcopy(self.sample_data4)
         # get all instances of the given element
         list_input = [1, 2, 3, 4, 5]
         # update those instances with the altered results
-        doc_updated = nested_update(
+        nested_update(
             doc, "plz", list_input, in_place=True, treat_as_element=True
         )
-        elem1 = doc_updated["plz"]
-        elem2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
+        elem1 = doc["plz"]
+        elem2 = doc["vertragsteile"][0]["beitragsDaten"]["plz"]
         # should not work without specifying "treat_list_as_element = True"
         # in nested_update
         self.assertEqual(elem1, list_input)
@@ -311,7 +320,7 @@ class TestNestedUpdate(BaseLookUpApi):
         # if you need to adress a list of dicts, you have to
         # manually iterate over those and pass them to nested_update
         # one by one
-        self.assertNotEqual(updated_document[1]["salsa"][0]["burrito"]["taco"], 200)
+        self.assertEqual(updated_document[1]["salsa"][0]["burrito"]["taco"], 200)
 
     def test_nested_update_raise_error(self):
         doc = self.sample_data4
@@ -380,7 +389,11 @@ class TestNestedUpdate(BaseLookUpApi):
                         {
                             "typ": "2",
                             "art": "1",
-                            "leistung": {"value": 7500242424.0, "einheit": "2"},
+                            "leistung": {
+                                "value": 7500242424.0,
+                                "einheit": "2",
+                                "plz": 84499
+                            },
                             "leistungsRhythmus": "1",
                         }
                     ],
@@ -410,16 +423,17 @@ class TestNestedUpdate(BaseLookUpApi):
 
 class TestNestedAlter(BaseLookUpApi):
     def test_nested_alter_in_place_true(self):
+        doc = copy.deepcopy(self.sample_data4)
 
         # callback functions
         def callback(data):
             return str(data) + "###"
 
-        doc_updated = nested_alter(
-            self.sample_data4, "vorgangsID", callback, in_place=True
+        nested_alter(
+            doc, "vorgangsID", callback, in_place=True
         )
 
-        vorgangsid = doc_updated["vorgangsID"]
+        vorgangsid = doc["vorgangsID"]
 
         self.assertEqual(vorgangsid, "1###")
 
@@ -440,18 +454,19 @@ class TestNestedAlter(BaseLookUpApi):
         self.assertEqual(vorgangsid, "1###")
 
     def test_nested_alter_list_input_in_place_true(self):
+        doc = copy.deepcopy(self.sample_data4)
 
         # callback functions
         def callback(data):
             return str(data) + "###"
 
-        doc_updated = nested_alter(
-            self.sample_data4, ["plz", "vorgangsID"], callback, in_place=True
+        nested_alter(
+            doc, ["plz", "vorgangsID"], callback, in_place=True
         )
 
-        plz1 = doc_updated["plz"]
-        plz2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
-        vorgangsid = doc_updated["vorgangsID"]
+        plz1 = doc["plz"]
+        plz2 = doc["vertragsteile"][0]["beitragsDaten"]["plz"]
+        vorgangsid = doc["vorgangsID"]
 
         # should not work without specifying
         # "treat_list_as_element = True" in nested_update
@@ -460,22 +475,21 @@ class TestNestedAlter(BaseLookUpApi):
         self.assertEqual(vorgangsid, "1###")
 
     def test_nested_alter_list_input_with_args_in_place_true(self):
+        doc = copy.deepcopy(self.sample_data4)
 
         # callback functions
         def callback(data, str1, str2):
             return str(data) + str1 + str2
 
-        doc_updated = nested_alter(
-            self.sample_data4,
-            ["plz", "vorgangsID"],
-            callback,
+        nested_alter(
+            doc, ["plz", "vorgangsID"], callback,
             function_parameters=["abc", "def"],
             in_place=True,
         )
 
-        plz1 = doc_updated["plz"]
-        plz2 = doc_updated["vertragsteile"][0]["beitragsDaten"]["plz"]
-        vorgangsid = doc_updated["vorgangsID"]
+        plz1 = doc["plz"]
+        plz2 = doc["vertragsteile"][0]["beitragsDaten"]["plz"]
+        vorgangsid = doc["vorgangsID"]
 
         # should not work without specifying
         # "treat_list_as_element = True" in nested_update
@@ -580,7 +594,10 @@ class TestNestedAlter(BaseLookUpApi):
                         {
                             "typ": "2",
                             "art": "1",
-                            "leistung": {"value": 7500242424.0, "einheit": "2"},
+                            "leistung": {
+                                "value": 7500242424.0, "einheit": "2",
+                                "plz": 84500
+                            },
                             "leistungsRhythmus": "1",
                         }
                     ],
