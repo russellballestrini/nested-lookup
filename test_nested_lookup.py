@@ -38,6 +38,7 @@ class TestNestedLookup(TestCase):
             "name": "Test",
             "date": "YYYY-MM-DD HH:MM:SS",
         }
+        self.subject_dict4 = {1: "a", 2: {"b": 44, "C": 55}, 3: "d", 4: "e", "6776": "works"}
 
     def test_nested_lookup(self):
         results = nested_lookup("d", self.subject_dict)
@@ -67,12 +68,25 @@ class TestNestedLookup(TestCase):
         self.assertIn(200, results)
         self.assertSetEqual({100, 200}, set(results))
 
+    def test_nested_lookup_key_is_non_str(self):
+        results = nested_lookup(key=4, document=self.subject_dict4)
+        self.assertIn("e", results)
+
     def test_wild_nested_lookup(self):
         results = nested_lookup(key="mail", document=self.subject_dict2, wild=True)
         self.assertEqual(4, len(results))
         self.assertIn("test1@example.com", results)
         self.assertIn("test2@example.com", results)
         self.assertIn("test3@example.com", results)
+
+    def test_wild_nested_lookup_integer_keys_in_document(self):
+        results = nested_lookup(key="c", document=self.subject_dict4, wild=True)
+        self.assertIn(55, results)
+
+    def test_wild_nested_lookup_integer_key_as_substring(self):
+        # test that wild works converts integers into strings before substring matching.
+        results = nested_lookup(key=77, document=self.subject_dict4, wild=True)
+        self.assertIn("works", results)
 
     def test_wild_with_keys_nested_lookup(self):
         matches = nested_lookup(

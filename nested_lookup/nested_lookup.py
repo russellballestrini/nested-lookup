@@ -13,6 +13,11 @@ def nested_lookup(key, document, wild=False, with_keys=False):
     return list(_nested_lookup(key, document, wild=wild, with_keys=with_keys))
 
 
+def _is_case_insensitive_substring(a, b):
+    """return True if `a` is a case insensitive substring of `b`, else False"""
+    return str(a).lower() in str(b).lower()
+
+
 def _nested_lookup(key, document, wild=False, with_keys=False):
     """Lookup a key in a nested document, yield a value"""
     if isinstance(document, list):
@@ -22,7 +27,7 @@ def _nested_lookup(key, document, wild=False, with_keys=False):
 
     if isinstance(document, dict):
         for k, v in iteritems(document):
-            if key == k or (wild and key.lower() in k.lower()):
+            if key == k or (wild and _is_case_insensitive_substring(key, k)):
                 if with_keys:
                     yield k, v
                 else:

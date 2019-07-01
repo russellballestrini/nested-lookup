@@ -1,8 +1,7 @@
 nested_lookup
 #############
 
-
-.. image:: https://img.shields.io/badge/pypi-0.2.15-green.svg
+.. image:: https://img.shields.io/badge/pypi-0.2.17-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
 .. image:: https://travis-ci.org/rameshrvr/nested-lookup.svg?branch=master
   :target: https://travis-ci.org/rameshrvr/nested-lookup
