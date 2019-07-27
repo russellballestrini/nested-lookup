@@ -70,10 +70,12 @@ def nested_update(document, key, value, in_place=False, treat_as_element=True):
 
     if not in_place:
         document = copy.deepcopy(document)
-    return _nested_update(document=document, key=key, value=value, val_len=val_len)
+    return _nested_update(
+        document=document, key=key, value=value, val_len=val_len,
+        match_counter={"counter": 0})
 
 
-def _nested_update(document, key, value, val_len, run=0):
+def _nested_update(document, key, value, val_len, match_counter):
     """
     Method to update a key->value pair in a nested document
     Args:
@@ -82,9 +84,10 @@ def _nested_update(document, key, value, val_len, run=0):
         key (str): Key to update the value
         value (list): value(s) which should be used for replacement purpouse
         val_len (int): lenght of the value element
-        run (int): holds the number of findings for the given key.
-            Every time the key is found, run = run + 1. If the list value[run]
-            exists,
+        match_counter (dict): {"counter" = 2}
+            holds the number of findings for the given key.
+            Every time the key is found, match_counter["counter"] += 1.
+            If the list value exists,
             the corresponding element is used for replacement purpouse.
             Defaults to 0.
     Return:
@@ -93,22 +96,24 @@ def _nested_update(document, key, value, val_len, run=0):
     if isinstance(document, list):
         for list_items in document:
             _nested_update(
-                document=list_items, key=key, value=value, val_len=val_len, run=run
+                document=list_items, key=key, value=value, val_len=val_len,
+                match_counter=match_counter
             )
     elif isinstance(document, dict):
-        if document.get(key):
+        if key in document:
             # check if a value with the coresponding index exists and
             # use it otherwise recycle the intially given value
-            if run < val_len:
-                val = value[run]
+            if match_counter["counter"] < val_len:
+                val = value[match_counter["counter"]]
             else:
-                run = 0
-                val = value[run]
+                match_counter["counter"] = 0
+                val = value[match_counter["counter"]]
             document[key] = val
-            run = run + 1
+            match_counter["counter"] += 1
         for dict_key, dict_value in iteritems(document):
             _nested_update(
-                document=dict_value, key=key, value=value, val_len=val_len, run=run
+                document=dict_value, key=key, value=value, val_len=val_len,
+                match_counter=match_counter
             )
     return document
 
