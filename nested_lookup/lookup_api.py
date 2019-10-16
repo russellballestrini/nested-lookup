@@ -72,8 +72,9 @@ def nested_update(document, key, value, in_place=False, treat_as_element=True):
 
 def _nested_update(document, key, value):
     """
-    Method to update a key->value pair in a nested document. If values count less than
-    keys count, then uses last value as default.
+    Method to update a key->value pair in a nested document.
+    If the number of passed values is less than the number of key matches
+    when scanning for updates, use last value as default.
     Args:
         document: Might be List of Dicts (or) Dict of Lists (or)
             Dict of List of Dicts etc...
