@@ -311,7 +311,7 @@ class TestNestedUpdate(BaseLookUpApi):
         # if you need to adress a list of dicts, you have to
         # manually iterate over those and pass them to nested_update
         # one by one
-        self.assertNotEqual(updated_document[1]["salsa"][0]["burrito"]["taco"], 200)
+        self.assertEqual(updated_document[1]["salsa"][0]["burrito"]["taco"], 200)
 
     def test_nested_update_raise_error(self):
         doc = self.sample_data4
@@ -552,6 +552,18 @@ class TestNestedAlter(BaseLookUpApi):
         self.assertEqual(out[0]["taco"], 52)
         self.assertEqual(out[1]["salsa"][0]["burrito"]["taco"], 79)
 
+    def test_nested_alter_work_with_right_order(self):
+        document = {"taco": 42, "salsa": [{"burrito":{"key":20}}], "key":50}
+
+        def callback(data):
+            return data + 100
+
+        altered_document = nested_alter(document, "key", callback, in_place=True)
+        
+        self.assertEqual(altered_document["salsa"][0]["burrito"]["key"], 120)
+        self.assertEqual(altered_document["key"], 150)
+
+        
     def test_sample_data4(self):
 
         result = {
