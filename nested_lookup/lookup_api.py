@@ -95,17 +95,11 @@ def _nested_update(document, key, value, val_len, run=0):
                 document=list_items, key=key, value=value, val_len=val_len, run=run
             )
     elif isinstance(document, dict):
-        if document.get(key):
-            # check if a value with the coresponding index exists and
-            # use it otherwise recycle the intially given value
-            if run < val_len:
-                val = value[run]
-            else:
-                run = 0
-                val = value[run]
-            document[key] = val
-            run = run + 1
         for dict_key, dict_value in iteritems(document):
+            if dict_key == key:
+                document[key] = value[0]
+                if len(value) > 1:
+                    value.pop(0)
             _nested_update(
                 document=dict_value, key=key, value=value, val_len=val_len, run=run
             )
