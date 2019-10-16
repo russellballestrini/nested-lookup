@@ -65,34 +65,27 @@ def nested_update(document, key, value, in_place=False, treat_as_element=True):
     elif treat_as_element:
         value = [value]
 
-    val_len = len(value)
-
     if not in_place:
         document = copy.deepcopy(document)
-    return _nested_update(document=document, key=key, value=value, val_len=val_len)
+    return _nested_update(document=document, key=key, value=value)
 
 
-def _nested_update(document, key, value, val_len, run=0):
+def _nested_update(document, key, value):
     """
-    Method to update a key->value pair in a nested document
+    Method to update a key->value pair in a nested document. If values count less than
+    keys count, then uses last value as default.
     Args:
         document: Might be List of Dicts (or) Dict of Lists (or)
             Dict of List of Dicts etc...
         key (str): Key to update the value
         value (list): value(s) which should be used for replacement purpouse
-        val_len (int): lenght of the value element
-        run (int): holds the number of findings for the given key.
-            Every time the key is found, run = run + 1. If the list value[run]
-            exists,
-            the corresponding element is used for replacement purpouse.
-            Defaults to 0.
     Return:
         Returns a document that has updated key, value pair.
     """
     if isinstance(document, list):
         for list_items in document:
             _nested_update(
-                document=list_items, key=key, value=value, val_len=val_len, run=run
+                document=list_items, key=key, value=value
             )
     elif isinstance(document, dict):
         for dict_key, dict_value in iteritems(document):
@@ -101,7 +94,7 @@ def _nested_update(document, key, value, val_len, run=0):
                 if len(value) > 1:
                     value.pop(0)
             _nested_update(
-                document=dict_value, key=key, value=value, val_len=val_len, run=run
+                document=dict_value, key=key, value=value
             )
     return document
 
