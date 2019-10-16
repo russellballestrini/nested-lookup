@@ -60,7 +60,7 @@ def nested_update(document, key, value, in_place=False, treat_as_element=True):
     # check the length of the list and provide it to _nested_update
     if not treat_as_element and not isinstance(value, list):
         raise Exception(
-            "You need to pass value as list if you opt for" + "this feature"
+            "The value must be a list when treat_as_element is False."
         )
     elif treat_as_element:
         value = [value]
@@ -106,7 +106,7 @@ def nested_alter(
     function_parameters=None,
     conversion_function=None,
     wild_alter=False,
-    in_place=True,
+    in_place=False,
 ):
     """
     Method to alter all values of the occurences of the key "key".
@@ -190,8 +190,7 @@ def _nested_alter(
     in_place,
     key_len,
 ):
-    """
-    """
+
     # return data if no callback_function is provided
     if callback_function is None:
         warnings.warn("Please provide a callback_function to nested_alter().")
