@@ -12,12 +12,18 @@ def sanitize(x):
     return not x.startswith("#") and x != ""
 
 
-with open("requirements.txt", "r") as f:
-    requires = filter(sanitize, map(remove_whitespace, f.readlines()))
+def requirements():
+    with open("requirements.txt", "r") as f:
+        r = f.readlines()
+    map(remove_whitespace, r)
+    filter(sanitize, r)
+    return r
+
+print(requirements())
 
 setup(
     name="nested-lookup",
-    version="0.2.17",
+    version="0.2.18",
     description="Python functions for working with deeply nested documents (lists and dicts) ",
     keywords="nested document dictionary dict list lookup schema json xml yaml",
     long_description=open("README.rst").read(),
@@ -28,7 +34,7 @@ setup(
     license="Public Domain",
     packages=find_packages(),
     include_package_data=True,
-    install_requires=requires,
+    install_requires=requirements(),
     classifiers=[
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
