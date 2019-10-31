@@ -66,6 +66,8 @@ def nested_update(document, key, value, in_place=False, treat_as_element=True):
     elif treat_as_element:
         value = [value]
 
+    val_len = len(value) - 1
+
     if not in_place:
         document = copy.deepcopy(document)
     return _nested_update(
