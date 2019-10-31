@@ -1,7 +1,7 @@
 nested_lookup
 #############
 
-.. image:: https://img.shields.io/badge/pypi-0.2.18-green.svg
+.. image:: https://img.shields.io/badge/pypi-0.2.19-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
 .. image:: https://travis-ci.org/rameshrvr/nested-lookup.svg?branch=master
   :target: https://travis-ci.org/rameshrvr/nested-lookup
@@ -13,31 +13,32 @@ A document in this case is a a mixture of Python dictionary and list objects typ
 
 *nested_lookup:*
   Perform a key lookup on a deeply nested document.
-  Returns a `list` of matching values.
+  Returns a ``list`` of matching values.
 
 *nested_update:*
   Given a document, find all occurences of the given key and update the value.
   By default, returns a copy of the document.
-  To mutate the original specify the `in_place=True` argument.
+  To mutate the original specify the ``in_place=True`` argument.
 
 *nested_delete:*
   Given a document, find all occurrences of the given key and delete it.
   By default, returns a copy of the document.
-  To mutate the original specify the `in_place=True` argument.
+  To mutate the original specify the ``in_place=True`` argument.
   
 *nested_alter:*
-  Given a document, find all occurrences of the given key and alter it with a callback function
+  Given a document, find all occurrences of the given key and alter it with a callback function.
   By default, returns a copy of the document.
-  To mutate the original specify the `in_place=True` argument.
+  To mutate the original specify the ``in_place=True`` argument.
 
 *get_all_keys:*
   Fetch all keys from a deeply nested dictionary.
-  Returns a `list` of keys.
+  Returns a ``list`` of keys.
 
 *get_occurrence_of_key/get_occurrence_of_value:*
   Returns the number of occurrences of a key/value from a nested dictionary.
 
-For example function invocations, plesae see the tutorial.
+For examples on how to invoke these functions, please check out the tutorial sections.
+
 
 .. contents::
 
@@ -63,64 +64,53 @@ or install from source using::
 quick tutorial
 ==============
 
-.. code-block:: python
+This tutorial uses the Python Interactive shell, please follow along : )
 
- >>> from nested_lookup import nested_lookup
+Before we start, let's define an example document to work on.
+
+.. code-block:: python
 
  >>> document = [ { 'taco' : 42 } , { 'salsa' : [ { 'burrito' : { 'taco' : 69 } } ] } ]
 
+
+First we will lookup a key from all layers of a document using ``nested_lookup``:
+
+.. code-block:: python
+
+ >>> from nested_lookup import nested_lookup
  >>> print(nested_lookup('taco', document))
  [42, 69]
+ 
+ As you can see we were returned a list of two integers, these integers are the values from the matched key lookups.
 
- >>> from nested_lookup import nested_update, nested_delete
 
+Next we will update a key and it's value from all layers of a document using ``nested_update``:
+
+.. code-block:: python
+
+ >>> from nested_lookup import nested_update
  >>> nested_update(document, key='burrito', value='Test')
  [{'taco': 42}, {'salsa': [{'burrito': 'Test'}]}]
+ 
+ Here you see that the key ``burrito`` had it's value changed to the string ``'Test'``, like we asked.
 
+
+Finally, lets test out a delete operation using ``nested_delete``:
+
+.. code-block:: python
+
+ >>> from nested_lookup import nested_delete
  >>> nested_delete(document, 'taco')
  [{}, {'salsa': [{'burrito': {}}]}]
 
+Perfect, the returned document looks just like we expected!
 
 
-*Nested Alter*:
-write a callback function which processes a scalar value.
-Be aware about the possible types which can be passed to the callback functions.
-In this example we can be sure that only int will be passed, in production you should check the type because it could be anything.
 
-.. code-block:: python
-
- >>> def callback(data):
- >>>     return data + 10 # add 10 to every taco prize
-
-The alter-version only works for scalar input (one dict), if you need to adress a list of dicts, you have to 
-manually iterate over those and pass them to nested_update one by one
-
-.. code-block:: python
-
- >>> out =[]
- >>> for elem in document:
- >>>     altered_document = nested_alter(elem,"taco", callback)
- >>>     out.append(altered_document)
-
- >>> print(out)
- [ { 'taco' : 52 } , { 'salsa' : [ { 'burrito' : { 'taco' : 79 } } ] } ]
-
- >>> from nested_lookup import get_all_keys
-
- >>> get_all_keys(document)
- ['taco', 'salsa', 'burrito', 'taco']
-
- >>> from nested_lookup import get_occurrence_of_key, get_occurrence_of_value
-
- >>> get_occurrence_of_key(document, key='taco')
- 2
-
- >>> get_occurrence_of_value(document, value='42')
- 1
 
 
 longer tutorial
-===============
+======================
 
 You may control the function's behavior by passing some optional arguments.
 
@@ -186,7 +176,7 @@ Additionally, if you also needed the matched key names, you could do this:
   }
 
 
-To Get / Delete / Update a key->value pair in nested document
+To lookup, update, and delete a key->value pair in nested document
 
 .. code-block:: python
 
@@ -228,6 +218,53 @@ To get the number of occurrence of the given key/value
   no_of_value_occurrence = get_occurrence_of_value(my_document, value='test2@example.com')
 
   print(no_of_value_occurrence)  # result => 1
+
+
+
+nested_alter tutorial
+=====================
+
+*Nested Alter*:
+write a callback function which processes a scalar value.
+Be aware about the possible types which can be passed to the callback functions.
+In this example we can be sure that only int will be passed, in production you should check the type because it could be anything.
+
+Before we start, let's define an example document to work on.
+
+.. code-block:: python
+
+ >>> document = [ { 'taco' : 42 } , { 'salsa' : [ { 'burrito' : { 'taco' : 69 } } ] } ]
+
+.. code-block:: python
+
+ >>> def callback(data):
+ >>>     return data + 10 # add 10 to every taco prize
+
+The alter-version only works for scalar input (one dict), if you need to adress a list of dicts, you have to 
+manually iterate over those and pass them to nested_update one by one
+
+.. code-block:: python
+
+ >>> out =[]
+ >>> for elem in document:
+ >>>     altered_document = nested_alter(elem,"taco", callback)
+ >>>     out.append(altered_document)
+
+ >>> print(out)
+ [ { 'taco' : 52 } , { 'salsa' : [ { 'burrito' : { 'taco' : 79 } } ] } ]
+
+ >>> from nested_lookup import get_all_keys
+
+ >>> get_all_keys(document)
+ ['taco', 'salsa', 'burrito', 'taco']
+
+ >>> from nested_lookup import get_occurrence_of_key, get_occurrence_of_value
+
+ >>> get_occurrence_of_key(document, key='taco')
+ 2
+
+ >>> get_occurrence_of_value(document, value='42')
+ 1
 
 
 misc
