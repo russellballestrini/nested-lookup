@@ -5,6 +5,7 @@ from nested_lookup import (
     get_all_keys,
     get_occurrence_of_key,
     get_occurrence_of_value,
+    get_occurrence_of_value_with_self_value
 )
 
 
@@ -349,6 +350,36 @@ class TestGetOccurrence(TestCase):
             }
         }
 
+        self.sample6 = [
+            {
+                "processor_name": "4",
+                "processor_speed": "2.7 GHz",
+                "core_details": {
+                    "total_numberof_cores": "4",
+                    "l2_cache(per_core)": "256 KB",
+                }
+            }
+        ]
+
+        self.sample7 = [
+            {
+                "processor_name": "4",
+                "processor_speed": "2.7 GHz",
+                "core_details": {
+                    "total_numberof_cores": "4",
+                    "l2_cache(per_core)": "256 KB",
+                }
+            },
+            {
+                "processor_name": "4",
+                "processor_speed": "2.7 GHz",
+                "core_details": {
+                    "total_numberof_cores": "4",
+                    "l2_cache(per_core)": "256 KB",
+                }
+            }
+        ]
+
     def test_sample_data1(self):
         result = get_occurrence_of_key(self.sample1, "build_version")
         self.assertEqual(4, result)
@@ -384,6 +415,30 @@ class TestGetOccurrence(TestCase):
         # Add key 'memory' and verify
         self.sample5["memory"] = 0
         self.assertEqual(2, get_occurrence_of_key(self.sample5, "memory"))
+
+    def test_sample_data6(self):
+        value = '4'
+        result = get_occurrence_of_value_with_self_value(self.sample6, value)
+        self.assertEqual(2, result[value]['occurrences'])
+        self.assertEqual(2, len(result[value]['values']))
+
+    def test_sample_data7(self):
+        value = '2.7 GHz'
+        result = get_occurrence_of_value_with_self_value(self.sample6, value)
+        self.assertEqual(1, result[value]['occurrences'])
+        self.assertEqual(1, len(result[value]['values']))
+
+    def test_sample_data8(self):
+        value = '4'
+        result = get_occurrence_of_value_with_self_value(self.sample7, value)
+        self.assertEqual(4, result[value]['occurrences'])
+        self.assertEqual(4, len(result[value]['values']))
+
+    def test_sample_data9(self):
+        value = '5'
+        result = get_occurrence_of_value_with_self_value(self.sample7, value)
+        self.assertEqual(0, result[value]['occurrences'])
+        self.assertEqual(0, len(result[value]['values']))
 
 
 if __name__ == "__main__":
