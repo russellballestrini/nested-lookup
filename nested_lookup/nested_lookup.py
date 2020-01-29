@@ -83,7 +83,7 @@ def get_occurrence_of_key(dictionary, key):
     return _get_occurrence(dictionary=dictionary, item="key", keyword=key)
 
 
-def get_occurrence_of_value_with_self_value(items: list, value: any) -> dict:
+def get_occurrences_and_values(items: list, value: any) -> dict:
     """
     Method to get occurrence of a value in a nested list of dictionary
 
@@ -116,7 +116,7 @@ def get_occurrence_of_value_with_self_value(items: list, value: any) -> dict:
 def _get_occurrence_with_values(dictionary, item, keyword):
     occurrence = [0]
 
-    result_recursion = recursion(dictionary, item, keyword, occurrence, True)
+    result_recursion = _recursion(dictionary, item, keyword, occurrence, True)
 
     global values_list
     values_list = []
@@ -137,7 +137,7 @@ def get_occurrence_of_value(dictionary, value):
     return _get_occurrence(dictionary=dictionary, item="value", keyword=value)
 
 
-def recursion(dictionary, item, keyword, occurrence, with_values=False):
+def _recursion(dictionary, item, keyword, occurrence, with_values=False):
 
     global values_list
 
@@ -150,11 +150,11 @@ def recursion(dictionary, item, keyword, occurrence, with_values=False):
             values_list.append(dictionary)
     for key, value in iteritems(dictionary):
         if isinstance(value, dict):
-            recursion(value, item, keyword, occurrence, with_values)
+            _recursion(value, item, keyword, occurrence, with_values)
         elif isinstance(value, list):
             for list_items in value:
                 if hasattr(list_items, "items"):
-                    recursion(list_items, item, keyword, occurrence, with_values)
+                    _recursion(list_items, item, keyword, occurrence, with_values)
                 elif list_items == keyword:
                     occurrence[0] += 1 if item == "value" else 0
 
@@ -174,7 +174,7 @@ def _get_occurrence(dictionary, item, keyword):
         Number of occurrence of the given keyword in the dict
     """
     occurrence = [0]
-    recursion(dictionary, item, keyword, occurrence)
+    _recursion(dictionary, item, keyword, occurrence)
 
     global values_list
     values_list = []
