@@ -219,6 +219,47 @@ To get the number of occurrence of the given key/value
 
   print(no_of_value_occurrence)  # result => 1
 
+To get the number of occurrence and their respective values
+
+.. code-block:: python
+
+  from nested_lookup import get_occurrences_and_values
+  
+  my_documents = [
+        {
+            "processor_name": "4",
+            "processor_speed": "2.7 GHz",
+            "core_details": {
+                "total_numberof_cores": "4",
+                "l2_cache(per_core)": "256 KB",
+            }
+        }
+    ]
+
+  result = get_occurrences_and_values(my_documents, value='4')
+
+  print(result)
+  
+  {
+	  "4": {
+		  "occurrences": 2,
+		  "values": [
+			  {
+				  "processor_name": "4",
+				  "processor_speed": "2.7 GHz",
+				  "core_details": {
+					  "total_numberof_cores": "4",
+					  "l2_cache(per_core)": "256 KB"
+				  }
+			  },
+			  {
+				  "total_numberof_cores": "4",
+				  "l2_cache(per_core)": "256 KB"
+			  }
+		  ]
+	  }
+ }
+
 
 
 nested_alter tutorial
