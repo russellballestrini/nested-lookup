@@ -83,7 +83,7 @@ def get_occurrence_of_key(dictionary, key):
     return _get_occurrence(dictionary=dictionary, item="key", keyword=key)
 
 
-def get_occurrences_and_values(items: list, value: any) -> dict:
+def get_occurrences_and_values(items, value):
     """
     Method to get occurrence of a value in a nested list of dictionary
 
