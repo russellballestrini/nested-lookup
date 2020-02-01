@@ -319,9 +319,11 @@ misc
   * Douglas Miranda
   * Ramesh RV
   * Salfiii (Florian S.)
+  * Matheus Lins
 
 :web:
   * http://russell.ballestrini.net
   * http://douglasmiranda.com
   * https://gist.github.com/douglasmiranda/5127251
   * https://github.com/Salfiii
+  * https://github.com/matheuslins
