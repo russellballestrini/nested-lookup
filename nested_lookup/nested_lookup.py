@@ -2,18 +2,17 @@ from six import iteritems
 
 from collections import defaultdict
 
-
 values_list = []
 
 
-def nested_lookup(key, document, wild=False, with_keys=False):
+def nested_lookup(key, document, wild=False, with_keys=False, match_filter=lambda value: True):
     """Lookup a key in a nested document, return a list of values"""
     if with_keys:
         d = defaultdict(list)
-        for k, v in _nested_lookup(key, document, wild=wild, with_keys=with_keys):
+        for k, v in _nested_lookup(key, document, wild=wild, with_keys=with_keys, match_filter=match_filter):
             d[k].append(v)
         return d
-    return list(_nested_lookup(key, document, wild=wild, with_keys=with_keys))
+    return list(_nested_lookup(key, document, wild=wild, with_keys=with_keys, match_filter=match_filter))
 
 
 def _is_case_insensitive_substring(a, b):
@@ -21,28 +20,27 @@ def _is_case_insensitive_substring(a, b):
     return str(a).lower() in str(b).lower()
 
 
-def _nested_lookup(key, document, wild=False, with_keys=False):
+def _nested_lookup(key, document, wild=False, with_keys=False, match_filter=lambda value: True):
     """Lookup a key in a nested document, yield a value"""
     if isinstance(document, list):
         for d in document:
-            for result in _nested_lookup(key, d, wild=wild, with_keys=with_keys):
+            for result in _nested_lookup(key, d, wild=wild, with_keys=with_keys, match_filter=match_filter):
                 yield result
 
     if isinstance(document, dict):
         for k, v in iteritems(document):
-            if key == k or (wild and _is_case_insensitive_substring(key, k)):
+            if (key == k or (wild and _is_case_insensitive_substring(key, k))) and match_filter(v):
                 if with_keys:
                     yield k, v
                 else:
                     yield v
             if isinstance(v, dict):
-                for result in _nested_lookup(key, v, wild=wild, with_keys=with_keys):
+                for result in _nested_lookup(key, v, wild=wild, with_keys=with_keys, match_filter=match_filter):
                     yield result
             elif isinstance(v, list):
                 for d in v:
                     for result in _nested_lookup(
-                        key, d, wild=wild, with_keys=with_keys
-                    ):
+                            key, d, wild=wild, with_keys=with_keys, match_filter=match_filter):
                         yield result
 
 
@@ -138,7 +136,6 @@ def get_occurrence_of_value(dictionary, value):
 
 
 def _recursion(dictionary, item, keyword, occurrence, with_values=False):
-
     global values_list
 
     if item == "key":

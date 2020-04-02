@@ -108,6 +108,7 @@ def nested_alter(
     conversion_function=None,
     wild_alter=False,
     in_place=False,
+    match_filter=lambda v: True
 ):
     """
     Method to alter all values of the occurences of the key "key".
@@ -127,6 +128,7 @@ def nested_alter(
             "callback_function"
         wild_alter: Find matching elements via wild-match by the given keys
             and alter those.
+        match_filter: Apply match_filter on values and return value only if mathc_filter return True.
         HINT: Keep in mind that the wild-match might return unexpected types!
         in_place (bool):
             True: modify the dict in place;
@@ -155,6 +157,7 @@ def nested_alter(
         wild_alter=wild_alter,
         in_place=in_place,
         key_len=key_len,
+        match_filter=match_filter
     )
 
 
@@ -190,6 +193,7 @@ def _nested_alter(
     wild_alter,
     in_place,
     key_len,
+    match_filter
 ):
 
     # return data if no callback_function is provided
@@ -200,7 +204,7 @@ def _nested_alter(
     # iterate over all given keys in the list
     for key in keys:
         # try to find the key:
-        findings = nested_lookup(key, document, with_keys=True, wild=wild_alter)
+        findings = nested_lookup(key, document, with_keys=True, wild=wild_alter, match_filter=match_filter)
         for k, v in findings.items():
             trans_val = _call_callback(
                 v, callback_function, function_parameters, conversion_function
