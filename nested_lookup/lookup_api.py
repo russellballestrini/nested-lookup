@@ -4,34 +4,36 @@ from six import iteritems
 from nested_lookup import nested_lookup
 
 
-def nested_delete(document, key, in_place=False):
+def nested_delete(document, key, in_place=False, match_filter=lambda v: True):
     if not in_place:
         document = copy.deepcopy(document)
-    return _nested_delete(document=document, key=key)
+    return _nested_delete(document=document, key=key, match_filter=match_filter)
 
 
-def _nested_delete(document, key):
+def _nested_delete(document, key, match_filter):
     """
     Method to delete a key->value pair from a nested document
     Args:
         document: Might be List of Dicts (or) Dict of Lists (or)
          Dict of List of Dicts etc...
         key: Key to delete
+        match_filter: Filter the values upon which the function should act.
+
     Return:
         Returns a document that includes everything but the given key
     """
     if isinstance(document, list):
         for list_items in document:
-            _nested_delete(document=list_items, key=key)
+            _nested_delete(document=list_items, key=key, match_filter=match_filter)
     elif isinstance(document, dict):
-        if document.get(key):
+        if document.get(key) and match_filter(document.get(key)):
             del document[key]
         for dict_key, dict_value in iteritems(document):
-            _nested_delete(document=dict_value, key=key)
+            _nested_delete(document=dict_value, key=key, match_filter=match_filter)
     return document
 
 
-def nested_update(document, key, value, in_place=False, treat_as_element=True):
+def nested_update(document, key, value, in_place=False, treat_as_element=True, match_filter=lambda v: True):
     """
     Method to update a key->value pair in a nested document
     Args:
@@ -43,14 +45,16 @@ def nested_update(document, key, value, in_place=False, treat_as_element=True):
             True: modify the dict in place;
             False: create a deep copy of the dict and modify it
             Defaults to False
-        treat_list_element (bool):
-            True: if a list is provided as "value", the function trys
-                to match the list elements to the occurences of the key.
-                If the key occures more often than the provided list has
+        treat_as_element (bool):
+            True: if a list is provided as "value", the function tries
+                to match the list elements to the occurrences of the key.
+                If the key occurs more often than the provided list has
                 elements, the first element gets recycled.
             False: the provided list is treated as one scalar value and
                 will be set as value to every key that matches.
             Defaults to True (because of backwards portability of the package).
+
+        match_filter: Filter the values upon which the function should act.
     Return:
         Returns a document that has updated key, value pair.
     """
@@ -67,10 +71,10 @@ def nested_update(document, key, value, in_place=False, treat_as_element=True):
 
     if not in_place:
         document = copy.deepcopy(document)
-    return _nested_update(document=document, key=key, value=value)
+    return _nested_update(document=document, key=key, value=value, match_filter=match_filter)
 
 
-def _nested_update(document, key, value):
+def _nested_update(document, key, value, match_filter):
     """
     Method to update a key->value pair in a nested document.
     If the number of passed values is less than the number of key matches
@@ -79,39 +83,38 @@ def _nested_update(document, key, value):
         document: Might be List of Dicts (or) Dict of Lists (or)
             Dict of List of Dicts etc...
         key (str): Key to update the value
-        value (list): value(s) which should be used for replacement purpouse
+        value (list): value(s) which should be used for replacement purpose
+        match_filter: Filter the values upon which the function should act.
+
     Return:
         Returns a document that has updated key, value pair.
     """
     if isinstance(document, list):
         for list_items in document:
             _nested_update(
-                document=list_items, key=key, value=value
-            )
+                document=list_items, key=key, value=value, match_filter=match_filter)
     elif isinstance(document, dict):
         for dict_key, dict_value in iteritems(document):
-            if dict_key == key:
+            if dict_key == key and match_filter(dict_value):
                 document[key] = value[0]
                 if len(value) > 1:
                     value.pop(0)
-            _nested_update(
-                document=dict_value, key=key, value=value
-            )
+            _nested_update(document=dict_value, key=key, value=value, match_filter=match_filter)
     return document
 
 
 def nested_alter(
-    document,
-    key,
-    callback_function=None,
-    function_parameters=None,
-    conversion_function=None,
-    wild_alter=False,
-    in_place=False,
-    match_filter=lambda v: True
+        document,
+        key,
+        callback_function=None,
+        function_parameters=None,
+        conversion_function=None,
+        wild_alter=False,
+        in_place=False,
+        match_filter=lambda v: True
 ):
     """
-    Method to alter all values of the occurences of the key "key".
+    Method to alter all values of the occurrences of the key "key".
     The provided callback_function is used to alter the scalar values
     Args:
         document: Might be List of Dicts (or) Dict of Lists (or)
@@ -128,7 +131,7 @@ def nested_alter(
             "callback_function"
         wild_alter: Find matching elements via wild-match by the given keys
             and alter those.
-        match_filter: Apply match_filter on values and return value only if mathc_filter return True.
+        match_filter: Filter the values upon which the function should act.
         HINT: Keep in mind that the wild-match might return unexpected types!
         in_place (bool):
             True: modify the dict in place;
@@ -162,7 +165,7 @@ def nested_alter(
 
 
 def _call_callback(
-    value_list, callback_function, function_parameters, conversion_function
+        value_list, callback_function, function_parameters, conversion_function
 ):
     """
     internal helper to call the callback function
@@ -185,17 +188,16 @@ def _call_callback(
 
 
 def _nested_alter(
-    document,
-    keys,
-    callback_function,
-    function_parameters,
-    conversion_function,
-    wild_alter,
-    in_place,
-    key_len,
-    match_filter
+        document,
+        keys,
+        callback_function,
+        function_parameters,
+        conversion_function,
+        wild_alter,
+        in_place,
+        key_len,
+        match_filter
 ):
-
     # return data if no callback_function is provided
     if callback_function is None:
         warnings.warn("Please provide a callback_function to nested_alter().")
@@ -206,13 +208,10 @@ def _nested_alter(
         # try to find the key:
         findings = nested_lookup(key, document, with_keys=True, wild=wild_alter, match_filter=match_filter)
         for k, v in findings.items():
-            trans_val = _call_callback(
-                v, callback_function, function_parameters, conversion_function
-            )
+            trans_val = _call_callback(v, callback_function, function_parameters, conversion_function)
             # use the transformed value and apply the update to the key
             # (dont treat the lists as elements here)
-            document = nested_update(
-                document, k, trans_val, in_place=in_place, treat_as_element=False
-            )
+            document = nested_update(document, k, trans_val, in_place=in_place, treat_as_element=False,
+                                     match_filter=match_filter)
 
     return document
