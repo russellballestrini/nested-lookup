@@ -24,7 +24,7 @@ def _nested_delete(document, key):
         for list_items in document:
             _nested_delete(document=list_items, key=key)
     elif isinstance(document, dict):
-        if document.get(key):
+        if key in document:
             del document[key]
         for dict_key, dict_value in iteritems(document):
             _nested_delete(document=dict_value, key=key)
