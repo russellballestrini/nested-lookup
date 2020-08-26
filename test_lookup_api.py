@@ -102,6 +102,15 @@ class BaseLookUpApi(TestCase):
             ],
         }
 
+        self.sample_data5 = {
+            "key1": {
+                "key2": True,
+                "key3": False,
+                "key4": 5,
+                "key5": 0,
+            }
+        }
+
 
 class TestNestedDelete(BaseLookUpApi):
     def test_sample_data1(self):
@@ -125,7 +134,26 @@ class TestNestedDelete(BaseLookUpApi):
     def test_sample_data3(self):
         result = {"values": [{"checks": [{}]}]}
         self.assertEqual(result, nested_delete(self.sample_data3, "monitoring_zones"))
+    
+    def test_false_bool(self):
+        result = {
+            "key1": {
+                "key2": True,
+                "key4": 5,
+                "key5": 0,
+            }
+        }
+        self.assertEqual(result, nested_delete(self.sample_data5, "key3"))
 
+    def test_falseish_number(self):
+        result = {
+            "key1": {
+                "key2": True,
+                "key3": False,
+                "key4": 5,
+            }
+        }
+        self.assertEqual(result, nested_delete(self.sample_data5, "key5"))
 
 class TestNestedUpdate(BaseLookUpApi):
     def test_sample_data1(self):
