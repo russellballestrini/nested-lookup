@@ -7,6 +7,7 @@ from nested_lookup import nested_delete, nested_alter
 class BaseLookUpApi(TestCase):
     def setUp(self):
         self.sample_data1 = {
+            "example_boolean": False,
             "build_version": {
                 "model_name": "MacBook Pro",
                 "build_version": {
@@ -118,6 +119,7 @@ class TestNestedDelete(BaseLookUpApi):
             "os_details": {"product_version": "10.13.6"},
             "name": "Test",
             "date": "YYYY-MM-DD HH:MM:SS",
+            "example_boolean": False,
         }
         self.assertEqual(result, nested_delete(self.sample_data1, "build_version"))
 
@@ -162,6 +164,7 @@ class TestNestedUpdate(BaseLookUpApi):
             "os_details": {"product_version": "10.13.6", "build_version": "Test1"},
             "name": "Test",
             "date": "YYYY-MM-DD HH:MM:SS",
+            "example_boolean": False,
         }
         self.assertEqual(
             result, nested_update(self.sample_data1, "build_version", "Test1")
@@ -176,6 +179,7 @@ class TestNestedUpdate(BaseLookUpApi):
             },
             "name": "Test",
             "date": "YYYY-MM-DD HH:MM:SS",
+            "example_boolean": False,
         }
 
         self.assertEqual(
@@ -190,7 +194,7 @@ class TestNestedUpdate(BaseLookUpApi):
 
     def test_nested_update_in_place_false(self):
         """
-        ested_update should mutate and return a copy of the original document
+        nested_update should mutate and return a copy of the original document
         """
         before_id = id(self.sample_data1)
         result = nested_update(

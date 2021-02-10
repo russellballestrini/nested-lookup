@@ -23,7 +23,7 @@ print(requirements())
 
 setup(
     name="nested-lookup",
-    version="0.2.21",
+    version="0.2.22",
     description="Python functions for working with deeply nested documents (lists and dicts) ",
     keywords="nested document dictionary dict list lookup schema json xml yaml",
     long_description=open("README.rst").read(),
@@ -43,6 +43,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
 )
 

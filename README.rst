@@ -1,7 +1,7 @@
 nested_lookup
 #############
 
-.. image:: https://img.shields.io/badge/pypi-0.2.21-green.svg
+.. image:: https://img.shields.io/badge/pypi-0.2.22-green.svg
   :target: https://pypi.python.org/pypi/nested-lookup
 .. image:: https://travis-ci.org/rameshrvr/nested-lookup.svg?branch=master
   :target: https://travis-ci.org/rameshrvr/nested-lookup
@@ -73,7 +73,7 @@ Before we start, let's define an example document to work on.
  >>> document = [ { 'taco' : 42 } , { 'salsa' : [ { 'burrito' : { 'taco' : 69 } } ] } ]
 
 
-First we will lookup a key from all layers of a document using ``nested_lookup``:
+First, we lookup a key from all layers of a document using ``nested_lookup``:
 
 .. code-block:: python
 
@@ -81,21 +81,19 @@ First we will lookup a key from all layers of a document using ``nested_lookup``
  >>> print(nested_lookup('taco', document))
  [42, 69]
  
- As you can see we were returned a list of two integers, these integers are the values from the matched key lookups.
+As you can see the function returned a list of two integers, these integers are the values from the matched key lookups.
 
-
-Next we will update a key and it's value from all layers of a document using ``nested_update``:
+Next, we update a key and value from all layers of a document using ``nested_update``:
 
 .. code-block:: python
 
  >>> from nested_lookup import nested_update
- >>> nested_update(document, key='burrito', value='Test')
- [{'taco': 42}, {'salsa': [{'burrito': 'Test'}]}]
+ >>> nested_update(document, key='burrito', value='test')
+ [{'taco': 42}, {'salsa': [{'burrito': 'test'}]}]
  
- Here you see that the key ``burrito`` had it's value changed to the string ``'Test'``, like we asked.
+Here you see that the key ``burrito`` had it's value changed to the string ``'test'``, like we asked.
 
-
-Finally, lets test out a delete operation using ``nested_delete``:
+Finally, we try out a delete operation using ``nested_delete``:
 
 .. code-block:: python
 
@@ -104,9 +102,6 @@ Finally, lets test out a delete operation using ``nested_delete``:
  [{}, {'salsa': [{'burrito': {}}]}]
 
 Perfect, the returned document looks just like we expected!
-
-
-
 
 
 longer tutorial
@@ -129,21 +124,21 @@ For example, given the following document:
  from nested_lookup import nested_lookup
 
  my_document = {
-    'name' : 'Russell Ballestrini',
-    'email_address' : 'test1@example.com',
-    'other' : {
-        'secondary_email' : 'test2@example.com',
-        'EMAIL_RECOVERY' : 'test3@example.com',
-        'email_address' : 'test4@example.com',
+    "name" : "Rocko Ballestrini",
+    "email_address" : "test1@example.com",
+    "other" : {
+        "secondary_email" : "test2@example.com",
+        "EMAIL_RECOVERY" : "test3@example.com",
+        "email_address" : "test4@example.com",
      },
  },
 
-Next, we could act `wild` and find all the email addresses like this:
+Next, we could act ``wild`` and find all the email addresses like this:
 
 .. code-block:: python
 
  results = nested_lookup(
-     key = 'mail',
+     key = "mail",
      document = my_document,
      wild = True
  )
@@ -152,14 +147,14 @@ Next, we could act `wild` and find all the email addresses like this:
 
 .. code-block:: python
 
- ['test1@example.com', 'test4@example.com', 'test2@example.com', 'test3@example.com']
+ ["test1@example.com", "test4@example.com", "test2@example.com", "test3@example.com"]
 
 Additionally, if you also needed the matched key names, you could do this:
 
 .. code-block:: python
 
  results = nested_lookup(
-     key = 'mail',
+     key = "mail",
      document = my_document,
      wild = True,
      with_keys = True,
@@ -170,54 +165,57 @@ Additionally, if you also needed the matched key names, you could do this:
 .. code-block:: python
 
   {
-   'email_address': ['test1@example.com', 'test4@example.com'],
-   'secondary_email': ['test2@example.com'],
-   'EMAIL_RECOVERY': ['test3@example.com']
+   "email_address": ["test1@example.com", "test4@example.com"],
+   "secondary_email": ["test2@example.com"],
+   "EMAIL_RECOVERY": ["test3@example.com"]
   }
 
+We do not mutate input, if we do you found a defect. Please open an issue.
 
-To lookup, update, and delete a key->value pair in nested document
+Let's delete and update our deeply nested key / values and see the results:
 
 .. code-block:: python
 
   from nested_lookup import nested_update, nested_delete
 
+  # result => {'other': {'secondary_email': 'test2@example.com', 'email_address': 'test4@example.com'}, 'email_address': 'test1@example.com', 'name': 'Rocko Ballestrini'}
   result = nested_delete(my_document, 'EMAIL_RECOVERY')
+  print(result)
 
-  print(result)  # result => {'other': {'secondary_email': 'test2@example.com', 'email_address': 'test4@example.com'}, 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
-
+  # result => {'other': 'Test', 'email_address': 'test1@example.com', 'name': 'Rocko Ballestrini'}
   result = nested_update(my_document, key='other', value='Test')
+  print(result)
 
-  print(result)  # result => {'other': 'Test', 'email_address': 'test1@example.com', 'name': 'Russell Ballestrini'}
 
-
-To get a list of every nested key in a document, run this:
+Now let's say we wanted to get a list of every nested key in a document, we could run this:
 
 .. code-block:: python
 
   from nested_lookup import get_all_keys
 
   keys = get_all_keys(my_document)
-
   print(keys)
 
 .. code-block:: python
 
   ['name', 'email_address', 'other', 'secondary_email', 'EMAIL_RECOVERY', 'email_address']
 
-To get the number of occurrence of the given key/value
+Also, to get the number of times a key or value occurs in the document, try:
 
 .. code-block:: python
 
-  from nested_lookup import get_occurrence_of_key, get_occurrence_of_value
+  from nested_lookup import (
+      get_occurrence_of_key,
+      get_occurrence_of_value,
+  )
 
-  no_of_key_occurrence = get_occurrence_of_key(my_document, key='email_address')
+  # result => 2
+  key_occurrence_count = get_occurrence_of_key(my_document, key='email_address')
+  print(no_of_key_occurrence)  
 
-  print(no_of_key_occurrence)  # result => 2
-
-  no_of_value_occurrence = get_occurrence_of_value(my_document, value='test2@example.com')
-
-  print(no_of_value_occurrence)  # result => 1
+  # result => 1
+  value_occurrence_count = get_occurrence_of_value(my_document, value='test2@example.com')
+  print(no_of_value_occurrence)
 
 To get the number of occurrence and their respective values
 
@@ -259,6 +257,8 @@ To get the number of occurrence and their respective values
 		  ]
 	  }
  }
+
+
 
 
 
