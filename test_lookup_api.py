@@ -585,17 +585,31 @@ class TestNestedAlter(BaseLookUpApi):
         self.assertEqual(out[1]["salsa"][0]["burrito"]["taco"], 79)
 
     def test_nested_alter_work_with_right_order(self):
-        document = {"taco": 42, "salsa": [{"burrito":{"key":20}}], "key":50}
+        document = {"taco": 42, "salsa": [{"burrito": {"key": 20}}], "key": 50}
 
         def callback(data):
             return data + 100
 
         altered_document = nested_alter(document, "key", callback, in_place=True)
-        
+
         self.assertEqual(altered_document["salsa"][0]["burrito"]["key"], 120)
         self.assertEqual(altered_document["key"], 150)
 
-        
+    def test_nested_alter_recursive(self):
+        document = {"key": {"rename me": {"key": {"rename me": 1}}}}
+
+        def callback(data):
+            try:
+                data["renamed"] = data.pop("rename me")
+            except KeyError:
+                pass
+            return data
+
+        altered_document = nested_alter(document, "key", callback, in_place=True)
+
+        self.assertIn("renamed", altered_document["key"].keys())
+        self.assertIn("renamed", altered_document["key"]["renamed"]["key"].keys())
+
     def test_sample_data4(self):
 
         result = {
