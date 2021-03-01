@@ -202,6 +202,7 @@ def _nested_alter(
         # try to find the key:
         findings = nested_lookup(key, document, with_keys=True, wild=wild_alter)
         for k, v in findings.items():
+            v = _nested_alter(v, keys, callback_function, function_parameters, conversion_function, wild_alter, in_place, key_len)
             trans_val = _call_callback(
                 v, callback_function, function_parameters, conversion_function
             )
