@@ -131,7 +131,7 @@ For example, given the following document:
         "EMAIL_RECOVERY" : "test3@example.com",
         "email_address" : "test4@example.com",
      },
- },
+ }
 
 Next, we could act ``wild`` and find all the email addresses like this:
 
